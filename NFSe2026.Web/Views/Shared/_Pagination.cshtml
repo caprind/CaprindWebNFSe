@@ -1,0 +1,229 @@
+@model dynamic
+@{
+    var actionName = ViewContext.RouteData.Values["action"]?.ToString() ?? "Index";
+    var controllerName = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    
+    // Acessa as propriedades do modelo usando dynamic
+    int totalPages = Model?.TotalPages ?? 0;
+    int pageNumber = Model?.PageNumber ?? 1;
+    int pageSize = Model?.PageSize ?? 10;
+    bool hasPreviousPage = Model?.HasPreviousPage ?? false;
+    bool hasNextPage = Model?.HasNextPage ?? false;
+}
+
+<style>
+    .pagination-modern {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem 0;
+        flex-wrap: wrap;
+    }
+
+    .pagination-modern .page-item {
+        list-style: none;
+        margin: 0;
+    }
+
+    .pagination-modern .page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 42px;
+        height: 42px;
+        padding: 0.5rem 0.75rem;
+        border: 2px solid #dee2e6;
+        border-radius: 8px;
+        background-color: #ffffff;
+        color: var(--theme-primary, #3b82f6);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .pagination-modern .page-link:hover:not(.disabled) {
+        background: linear-gradient(135deg, var(--theme-primary-gradient-start, #3b82f6) 0%, var(--theme-primary-gradient-end, #1e40af) 100%);
+        color: #ffffff;
+        border-color: var(--theme-primary, #3b82f6);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .pagination-modern .page-item.active .page-link {
+        background: linear-gradient(135deg, var(--theme-primary-gradient-start, #3b82f6) 0%, var(--theme-primary-gradient-end, #1e40af) 100%);
+        color: #ffffff;
+        border-color: var(--theme-primary, #3b82f6);
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        cursor: default;
+    }
+
+    .pagination-modern .page-item.active .page-link:hover {
+        transform: none;
+    }
+
+    .pagination-modern .page-item.disabled .page-link {
+        background-color: #f8f9fa;
+        color: #6c757d;
+        border-color: #dee2e6;
+        cursor: not-allowed;
+        opacity: 0.6;
+        box-shadow: none;
+    }
+
+    .pagination-modern .page-item.disabled .page-link:hover {
+        transform: none;
+        background-color: #f8f9fa;
+        color: #6c757d;
+    }
+
+    .pagination-modern .page-link .page-icon {
+        font-size: 1.1em;
+        line-height: 1;
+    }
+
+    .pagination-modern .page-link.ellipsis {
+        border: none;
+        background: transparent;
+        box-shadow: none;
+        cursor: default;
+        min-width: auto;
+        padding: 0.5rem;
+    }
+
+    .pagination-modern .page-link.ellipsis:hover {
+        transform: none;
+        background: transparent;
+        color: #6c757d;
+    }
+
+    /* Responsividade */
+    @@media (max-width: 576px) {
+        .pagination-modern {
+            gap: 0.25rem;
+        }
+
+        .pagination-modern .page-link {
+            min-width: 36px;
+            height: 36px;
+            padding: 0.375rem 0.5rem;
+            font-size: 0.875rem;
+        }
+    }
+
+    /* Suporte para tema dark */
+    [data-theme="dark"] .pagination-modern .page-link {
+        background-color: var(--theme-bg-tertiary, #374151);
+        border-color: var(--theme-border-color, #4b5563);
+        color: var(--theme-text-primary, #f9fafb);
+    }
+
+    [data-theme="dark"] .pagination-modern .page-item.disabled .page-link {
+        background-color: var(--theme-bg-secondary, #111827);
+        color: var(--theme-text-secondary, #d1d5db);
+        border-color: var(--theme-border-color, #4b5563);
+    }
+
+    [data-theme="dark"] .pagination-modern .page-link.ellipsis {
+        background: transparent;
+        color: var(--theme-text-secondary, #d1d5db);
+    }
+</style>
+
+@if (totalPages > 1)
+{
+    <nav aria-label="Paginação" class="pagination-modern">
+        @* Botão Anterior *@
+        @if (hasPreviousPage)
+        {
+            <div class="page-item">
+                <a class="page-link" href="@Url.Action(actionName, controllerName, new { page = pageNumber - 1, pageSize = pageSize })" aria-label="Página anterior">
+                    <span class="page-icon">&laquo;</span>
+                    <span class="d-none d-sm-inline ms-1">Anterior</span>
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="page-item disabled">
+                <span class="page-link" aria-label="Página anterior">
+                    <span class="page-icon">&laquo;</span>
+                    <span class="d-none d-sm-inline ms-1">Anterior</span>
+                </span>
+            </div>
+        }
+
+        @{
+            var startPage = Math.Max(1, pageNumber - 2);
+            var endPage = Math.Min(totalPages, pageNumber + 2);
+        }
+
+        @* Primeira página *@
+        @if (startPage > 1)
+        {
+            <div class="page-item">
+                <a class="page-link" href="@Url.Action(actionName, controllerName, new { page = 1, pageSize = pageSize })">1</a>
+            </div>
+            @if (startPage > 2)
+            {
+                <div class="page-item disabled">
+                    <span class="page-link ellipsis">...</span>
+                </div>
+            }
+        }
+
+        @* Páginas ao redor da atual *@
+        @for (int i = startPage; i <= endPage; i++)
+        {
+            if (i == pageNumber)
+            {
+                <div class="page-item active">
+                    <span class="page-link" aria-current="page">@i</span>
+                </div>
+            }
+            else
+            {
+                <div class="page-item">
+                    <a class="page-link" href="@Url.Action(actionName, controllerName, new { page = i, pageSize = pageSize })">@i</a>
+                </div>
+            }
+        }
+
+        @* Última página *@
+        @if (endPage < totalPages)
+        {
+            @if (endPage < totalPages - 1)
+            {
+                <div class="page-item disabled">
+                    <span class="page-link ellipsis">...</span>
+                </div>
+            }
+            <div class="page-item">
+                <a class="page-link" href="@Url.Action(actionName, controllerName, new { page = totalPages, pageSize = pageSize })">@totalPages</a>
+            </div>
+        }
+
+        @* Botão Próxima *@
+        @if (hasNextPage)
+        {
+            <div class="page-item">
+                <a class="page-link" href="@Url.Action(actionName, controllerName, new { page = pageNumber + 1, pageSize = pageSize })" aria-label="Próxima página">
+                    <span class="d-none d-sm-inline me-1">Próxima</span>
+                    <span class="page-icon">&raquo;</span>
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="page-item disabled">
+                <span class="page-link" aria-label="Próxima página">
+                    <span class="d-none d-sm-inline me-1">Próxima</span>
+                    <span class="page-icon">&raquo;</span>
+                </span>
+            </div>
+        }
+    </nav>
+}
+

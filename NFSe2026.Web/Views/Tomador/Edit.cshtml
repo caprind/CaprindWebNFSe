@@ -1,0 +1,101 @@
+@model NFSe2026.Web.Models.TomadorCreateViewModel
+@{
+    ViewData["Title"] = "Editar Tomador";
+    var tomadorId = ViewContext.RouteData.Values["id"]?.ToString();
+}
+
+<h2>Editar Tomador</h2>
+<hr />
+
+
+<div class="row">
+    <div class="col-md-8">
+        <form id="formEditTomador" method="post" action="/Tomador/Edit/@tomadorId" novalidate>
+            @Html.AntiForgeryToken()
+            @* ID não precisa estar no form, já vem na rota *@
+            
+            <div class="mb-3">
+                <label for="TipoPessoa" class="form-label">Tipo de Pessoa</label>
+                <select name="TipoPessoa" id="TipoPessoa" class="form-select">
+                    @if (Model.TipoPessoa == 1)
+                    {
+                        <option value="1" selected>Pessoa Física</option>
+                        <option value="2">Pessoa Jurídica</option>
+                    }
+                    else
+                    {
+                        <option value="1">Pessoa Física</option>
+                        <option value="2" selected>Pessoa Jurídica</option>
+                    }
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="RazaoSocialNome" class="form-label">Nome/Razão Social</label>
+                <input type="text" name="RazaoSocialNome" id="RazaoSocialNome" class="form-control" value="@Model.RazaoSocialNome" />
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="InscricaoEstadual" class="form-label">Inscrição Estadual</label>
+                    <input type="text" name="InscricaoEstadual" id="InscricaoEstadual" class="form-control" value="@(Model.InscricaoEstadual ?? "")" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="InscricaoMunicipal" class="form-label">Inscrição Municipal</label>
+                    <input type="text" name="InscricaoMunicipal" id="InscricaoMunicipal" class="form-control" value="@(Model.InscricaoMunicipal ?? "")" />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="Endereco" class="form-label">Endereço</label>
+                <input type="text" name="Endereco" id="Endereco" class="form-control" value="@Model.Endereco" />
+            </div>
+
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label for="Numero" class="form-label">Número</label>
+                    <input type="text" name="Numero" id="Numero" class="form-control" value="@Model.Numero" />
+                </div>
+                <div class="col-md-9 mb-3">
+                    <label for="Complemento" class="form-label">Complemento</label>
+                    <input type="text" name="Complemento" id="Complemento" class="form-control" value="@(Model.Complemento ?? "")" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="Bairro" class="form-label">Bairro</label>
+                    <input type="text" name="Bairro" id="Bairro" class="form-control" value="@Model.Bairro" />
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="Cidade" class="form-label">Cidade</label>
+                    <input type="text" name="Cidade" id="Cidade" class="form-control" value="@Model.Cidade" />
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="UF" class="form-label">UF</label>
+                    <input type="text" name="UF" id="UF" class="form-control" value="@Model.UF" maxlength="2" />
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="CEP" class="form-label">CEP</label>
+                    <input type="text" name="CEP" id="CEP" class="form-control" value="@Model.CEP" maxlength="8" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="Email" class="form-label">Email</label>
+                    <input type="text" name="Email" id="Email" class="form-control" value="@(Model.Email ?? "")" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="Telefone" class="form-label">Telefone</label>
+                    <input type="text" name="Telefone" id="Telefone" class="form-control" value="@(Model.Telefone ?? "")" />
+                </div>
+            </div>
+
+            <div class="form-group mt-4">
+                <button type="submit" class="btn btn-primary">Salvar</button>
+                <a href="/Tomador" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>

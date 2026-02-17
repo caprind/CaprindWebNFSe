@@ -1,0 +1,60 @@
+@model IEnumerable<NFSe2026.Web.Models.PrestadorViewModel>
+
+@{
+    ViewData["Title"] = "Prestadores";
+}
+
+<h1>Prestadores</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Novo Prestador</a>
+</p>
+
+@section Scripts {
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <div data-toast-message="@ViewBag.ErrorMessage" data-toast-type="error" style="display: none;"></div>
+    }
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Razão Social</th>
+            <th>CNPJ</th>
+            <th>Inscrição Municipal</th>
+            <th>Cidade/UF</th>
+            <th>Ambiente</th>
+            <th>Ativo</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.RazaoSocial</td>
+                    <td>@item.CNPJ</td>
+                    <td>@item.InscricaoMunicipal</td>
+                    <td>@item.Cidade/@item.UF</td>
+                    <td>@(item.Ambiente == 1 ? "Homologação" : "Produção")</td>
+                    <td>@(item.Ativo ? "Sim" : "Não")</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Detalhes</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Editar</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Excluir</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="7" class="text-center">Nenhum prestador cadastrado.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+

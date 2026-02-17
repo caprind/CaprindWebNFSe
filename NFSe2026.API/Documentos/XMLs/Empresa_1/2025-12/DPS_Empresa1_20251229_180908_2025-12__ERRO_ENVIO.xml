@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-16"?>
+<NFSe xmlns="http://www.sped.fazenda.gov.br/nfse" versao="1.01">
+  <infNFSe Id="NFS353427046100010400000000000000000000000000000020251229210908">
+    <xLocEmi>INDAIATUBA</xLocEmi>
+    <xLocPrestacao>INDAIATUBA</xLocPrestacao>
+    <nNFSe>1</nNFSe>
+    <cLocIncid>3520509</cLocIncid>
+    <xLocIncid>INDAIATUBA</xLocIncid>
+    <xTribNac>Testes</xTribNac>
+    <xNBS>Licenciamento de direitos de uso de programas de computador (software)</xNBS>
+    <verAplic>EmissorWeb_1.4.0.0</verAplic>
+    <ambGer>2</ambGer>
+    <tpEmis>1</tpEmis>
+    <procEmi>2</procEmi>
+    <cStat>100</cStat>
+    <dhProc>2025-12-29T18:09:08-03:00</dhProc>
+    <nDFSe>1</nDFSe>
+    <emit>
+      <CNPJ>34270461000104</CNPJ>
+      <xNome>FABIO CARDOSO RODRIGUES FLORES - ME</xNome>
+      <enderNac>
+        <xLgr>RUA IPIRANGA</xLgr>
+        <nro>338</nro>
+        <xBairro>CIDADE NOVA</xBairro>
+        <cMun>3520509</cMun>
+        <UF>SP</UF>
+        <CEP>13334110</CEP>
+      </enderNac>
+      <fone>1938255196</fone>
+      <email>FRANCISCO@CAPRIND.COM.BR</email>
+    </emit>
+    <valores>
+      <vLiq>100,00</vLiq>
+    </valores>
+    <DPS xmlns="http://www.sped.fazenda.gov.br/nfse" versao="1.01">
+      <infDPS Id="DPS35205093427046100010490000000020251229210908">
+        <tpAmb>2</tpAmb>
+        <dhEmi>2025-12-29T18:09:08-03:00</dhEmi>
+        <verAplic>EmissorWeb_1.4.0.26</verAplic>
+        <serie>900</serie>
+        <nDPS>1</nDPS>
+        <dCompet>2025-12-28</dCompet>
+        <tpEmit>1</tpEmit>
+        <cLocEmi>3520509</cLocEmi>
+        <prest>
+          <CNPJ>34270461000104</CNPJ>
+          <fone>1938255196</fone>
+          <email>FRANCISCO@CAPRIND.COM.BR</email>
+          <regTrib>
+            <opSimpNac>3</opSimpNac>
+            <regApTribSN>1</regApTribSN>
+            <regEspTrib>0</regEspTrib>
+          </regTrib>
+        </prest>
+        <toma>
+          <CNPJ>05370378000109</CNPJ>
+          <xNome>ALEX FERRAMENTAS INDAIATUBA LTDA</xNome>
+          <end>
+            <endNac>
+              <cMun>3520509</cMun>
+              <CEP>13346400</CEP>
+            </endNac>
+            <xLgr>ARIO BARNABE</xLgr>
+            <nro>416</nro>
+            <xBairro>JD MORADA DO SOL</xBairro>
+          </end>
+        </toma>
+        <serv>
+          <locPrest>
+            <cLocPrestacao>3520509</cLocPrestacao>
+          </locPrest>
+          <cServ>
+            <cTribNac>111032200</cTribNac>
+            <xDescServ>Testes</xDescServ>
+            <cNBS>111032200</cNBS>
+          </cServ>
+        </serv>
+        <valores>
+          <vServPrest>
+            <vServ>100,00</vServ>
+          </vServPrest>
+          <trib>
+            <tribMun>
+              <tribISSQN>1</tribISSQN>
+              <tpRetISSQN>1</tpRetISSQN>
+            </tribMun>
+            <tribFed />
+            <totTrib>
+              <pTotTribSN>5.00</pTotTribSN>
+            </totTrib>
+          </trib>
+        </valores>
+      </infDPS>
+    </DPS>
+  </infNFSe>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" /><SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" /><DigestValue>chAETiIxt1ZYwiS5V7HAV2DAbrbmFLBpxtPrMcszk/s=</DigestValue></Reference></SignedInfo><SignatureValue>tf+0nDaY6bMJnvL/aOY/MUtONfFM2NrNEqqMpZmB6RLE6jLQq6Nh5UaJ+EBPQlHbcTQb9fcetAZebPKf8+eZYqrC0klgYOTe3RMcW4U0NyV5Ew2Tsp1H2lXs6dorPM/Op+cZm5r4obyGNEeoyMVL/QXmmclK7rR49t0kEAPbgggt+lcsXmbRq0VZzMA/4cE+1rLo6VSVNdy46F85pmyRyr+bPTY6huAe3stMzMoYuY39oNFeXeJpGEEmB1kGnrJeUisseBXyGY6CatLFeWhkNoNIiYw8o0Q07Z70pgkdT9WQtzGL6uv/+nCBpycvz+hXbulG+i69u9Z6V00j3hkqsA==</SignatureValue><KeyInfo><X509Data><X509Certificate>MIIH6DCCBdCgAwIBAgIKLmgbxolNn7sYpzANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJCUjEWMBQGA1UECwwNQUMgU3luZ3VsYXJJRDETMBEGA1UECgwKSUNQLUJyYXNpbDEfMB0GA1UEAwwWQUMgU3luZ3VsYXJJRCBNdWx0aXBsYTAeFw0yNTA4MDcxNjQ4MjhaFw0yNjA4MDcxNjQ4MjhaMIHTMQswCQYDVQQGEwJCUjETMBEGA1UECgwKSUNQLUJyYXNpbDEiMCAGA1UECwwZQ2VydGlmaWNhZG8gRGlnaXRhbCBQSiBBMTEZMBcGA1UECwwQVmlkZW9jb25mZXJlbmNpYTEXMBUGA1UECwwOMzMzOTk0MjgwMDAxMDgxHzAdBgNVBAsMFkFDIFN5bmd1bGFySUQgTXVsdGlwbGExNjA0BgNVBAMMLUZBQklPIENBUkRPU08gUk9EUklHVUVTIEZMT1JFUzozNDI3MDQ2MTAwMDEwNDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMcH6V9wfYKowmY8VcgbA0Bx2x+mqoPpFM0ExIU4F3jUyaFzLhtxZt6+ka7d+jpxyI2TiUQ9Wuo0oZBJgtHS+b4GJDuEUNLn6bgfpGtvEZUoxdo3osqTjLVn0IiTQSHVXat9LpRLCXS8NK7QEgJvYovVrBqD23Kf0RrVA6vfbd9lBZVukNd4q+9MWv3hIffpuz0omzfSbYN5UW+85912yTiNqySn6dUJ8ONqnbDdJ6Dib7dY8pFGAWUkh+spUAqTvhHyBpogQmJ3GSZjNiMtQovV/VIyxsY10bVjuplKCLhet7IrNdqfjnDrtWrPM9Uhcn3xenR4At0i/mXIl+B0o8sCAwEAAaOCAzMwggMvMA4GA1UdDwEB/wQEAwIF4DAdBgNVHSUEFjAUBggrBgEFBQcDBAYIKwYBBQUHAwIwCQYDVR0TBAIwADAfBgNVHSMEGDAWgBST4f9+HeX15E3hOWKLIWmV5q9yFjAdBgNVHQ4EFgQUoS1DX8BD6qE1PwlPsbejTw6koPowfwYIKwYBBQUHAQEEczBxMG8GCCsGAQUFBzAChmNodHRwOi8vc3luZ3VsYXJpZC5jb20uYnIvcmVwb3NpdG9yaW8vYWMtc3luZ3VsYXJpZC1tdWx0aXBsYS9jZXJ0aWZpY2Fkb3MvYWMtc3luZ3VsYXJpZC1tdWx0aXBsYS5wN2IwgYIGA1UdIAR7MHkwdwYHYEwBAgGBBTBsMGoGCCsGAQUFBwIBFl5odHRwOi8vc3luZ3VsYXJpZC5jb20uYnIvcmVwb3NpdG9yaW8vYWMtc3luZ3VsYXJpZC1tdWx0aXBsYS9kcGMvZHBjLWFjLXN5bmd1bGFySUQtbXVsdGlwbGEucGRmMIHHBgNVHREEgb8wgbygKQYFYEwBAwKgIAQeRkFCSU8gQ0FSRE9TTyBST0RSSUdVRVMgRkxPUkVToBkGBWBMAQMDoBAEDjM0MjcwNDYxMDAwMTA0oEIGBWBMAQMEoDkENzA4MTIxOTg0MzE2ODc4MDA4MTIwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDCgFwYFYEwBAwegDgQMMDAwMDAwMDAwMDAwgRdGQUJJT0NSRkxPUkVTQEdNQUlMLkNPTTCB4gYDVR0fBIHaMIHXMG+gbaBrhmlodHRwOi8vaWNwLWJyYXNpbC5zeW5ndWxhcmlkLmNvbS5ici9yZXBvc2l0b3Jpby9hYy1zeW5ndWxhcmlkLW11bHRpcGxhL2xjci9sY3ItYWMtc3luZ3VsYXJpZC1tdWx0aXBsYS5jcmwwZKBioGCGXmh0dHA6Ly9zeW5ndWxhcmlkLmNvbS5ici9yZXBvc2l0b3Jpby9hYy1zeW5ndWxhcmlkLW11bHRpcGxhL2xjci9sY3ItYWMtc3luZ3VsYXJpZC1tdWx0aXBsYS5jcmwwDQYJKoZIhvcNAQELBQADggIBAB/b/9viv3bX2AvSaJmNCUGdC5gBg1+CseiddxoeMNggBV2yD546ykxPc9wBMnTa63YPaBKFcTW9Pl4esGAmUFiphOlNwalRpDm8f4+tFJL+dtisCcIGPAHmFrx/0WgTG1BkCsQkjsbgGHgPrPlcQjQdSWCX+aNckw83iEnkt8ruwnPDKdabodTh6jZSts35VwSDNr4g+UVeYGEiKWUnYHjAD6v2PwehAjnamJ782WxVv8I3xwGqjVQ+emPJyEB3Nn5uX4Cew9qGAADEMvChAgUW4dgKnuIjhE40zrR7pqqLm8oVMWQWmJaNvQmZTKi5mGTdBKnlFp/MmGy0Yu/8JQJq8vChll6P7A7Ei2YP9jrNOyCkwN/yNlIrLwc3V2Vk+5SDuIp+zUTMfgI56Wp4pW2j0kNOKMSvuISKKC9rDTbHr+F0DZ/2kidT8bFqoKxFBqBRszBUinqTI2NuIGTyKDI3G5Rh9tjSSqG8VnGzoCJ41eMrAW3wqLzDMb+3zISLezH+dMCMUHGrKebvQ+GmWVLUukL7UdTDMEgjLeZir5Csf+6maJd7nOjx+CTlTu/77vSHEJl2vgb30XuaNfDdc9p/fS/xXS7OeasKO/SEypNrjaPfwJm9GH8slOHO52V4Q4RSt6AC1fRwpl4Rda4wo9GBJUrmRNNGANQxkkrlpBXv</X509Certificate></X509Data></KeyInfo></Signature></NFSe>

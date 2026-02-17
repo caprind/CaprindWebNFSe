@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-16"?>
+<NFSe xmlns="http://www.sped.fazenda.gov.br/nfse" versao="1.01">
+  <infNFSe Id="NFS353427046100010400000000000000000000000000000020251229210908">
+    <xLocEmi>INDAIATUBA</xLocEmi>
+    <xLocPrestacao>INDAIATUBA</xLocPrestacao>
+    <nNFSe>1</nNFSe>
+    <cLocIncid>3520509</cLocIncid>
+    <xLocIncid>INDAIATUBA</xLocIncid>
+    <xTribNac>Testes</xTribNac>
+    <xNBS>Licenciamento de direitos de uso de programas de computador (software)</xNBS>
+    <verAplic>EmissorWeb_1.4.0.0</verAplic>
+    <ambGer>2</ambGer>
+    <tpEmis>1</tpEmis>
+    <procEmi>2</procEmi>
+    <cStat>100</cStat>
+    <dhProc>2025-12-29T18:09:08-03:00</dhProc>
+    <nDFSe>1</nDFSe>
+    <emit>
+      <CNPJ>34270461000104</CNPJ>
+      <xNome>FABIO CARDOSO RODRIGUES FLORES - ME</xNome>
+      <enderNac>
+        <xLgr>RUA IPIRANGA</xLgr>
+        <nro>338</nro>
+        <xBairro>CIDADE NOVA</xBairro>
+        <cMun>3520509</cMun>
+        <UF>SP</UF>
+        <CEP>13334110</CEP>
+      </enderNac>
+      <fone>1938255196</fone>
+      <email>FRANCISCO@CAPRIND.COM.BR</email>
+    </emit>
+    <valores>
+      <vLiq>100,00</vLiq>
+    </valores>
+    <DPS xmlns="http://www.sped.fazenda.gov.br/nfse" versao="1.01">
+      <infDPS Id="DPS35205093427046100010490000000020251229210908">
+        <tpAmb>2</tpAmb>
+        <dhEmi>2025-12-29T18:09:08-03:00</dhEmi>
+        <verAplic>EmissorWeb_1.4.0.26</verAplic>
+        <serie>900</serie>
+        <nDPS>1</nDPS>
+        <dCompet>2025-12-28</dCompet>
+        <tpEmit>1</tpEmit>
+        <cLocEmi>3520509</cLocEmi>
+        <prest>
+          <CNPJ>34270461000104</CNPJ>
+          <fone>1938255196</fone>
+          <email>FRANCISCO@CAPRIND.COM.BR</email>
+          <regTrib>
+            <opSimpNac>3</opSimpNac>
+            <regApTribSN>1</regApTribSN>
+            <regEspTrib>0</regEspTrib>
+          </regTrib>
+        </prest>
+        <toma>
+          <CNPJ>05370378000109</CNPJ>
+          <xNome>ALEX FERRAMENTAS INDAIATUBA LTDA</xNome>
+          <end>
+            <endNac>
+              <cMun>3520509</cMun>
+              <CEP>13346400</CEP>
+            </endNac>
+            <xLgr>ARIO BARNABE</xLgr>
+            <nro>416</nro>
+            <xBairro>JD MORADA DO SOL</xBairro>
+          </end>
+        </toma>
+        <serv>
+          <locPrest>
+            <cLocPrestacao>3520509</cLocPrestacao>
+          </locPrest>
+          <cServ>
+            <cTribNac>111032200</cTribNac>
+            <xDescServ>Testes</xDescServ>
+            <cNBS>111032200</cNBS>
+          </cServ>
+        </serv>
+        <valores>
+          <vServPrest>
+            <vServ>100,00</vServ>
+          </vServPrest>
+          <trib>
+            <tribMun>
+              <tribISSQN>1</tribISSQN>
+              <tpRetISSQN>1</tpRetISSQN>
+            </tribMun>
+            <tribFed />
+            <totTrib>
+              <pTotTribSN>5.00</pTotTribSN>
+            </totTrib>
+          </trib>
+        </valores>
+      </infDPS>
+    </DPS>
+  </infNFSe>
+</NFSe>

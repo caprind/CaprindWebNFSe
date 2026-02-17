@@ -1,0 +1,474 @@
+@model NFSe2026.Web.Models.PagedResultViewModel<NFSe2026.Web.Models.TomadorViewModel>
+@{
+    ViewData["Title"] = "Tomadores";
+}
+
+@functions {
+    string FormatarCPFCNPJ(string cpfcnpj)
+    {
+        if (string.IsNullOrEmpty(cpfcnpj))
+            return cpfcnpj;
+        
+        var apenasNumeros = cpfcnpj.Replace(".", "").Replace("/", "").Replace("-", "");
+        
+        if (apenasNumeros.Length == 11) // CPF
+        {
+            return $"{apenasNumeros.Substring(0, 3)}.{apenasNumeros.Substring(3, 3)}.{apenasNumeros.Substring(6, 3)}-{apenasNumeros.Substring(9, 2)}";
+        }
+        else if (apenasNumeros.Length == 14) // CNPJ
+        {
+            return $"{apenasNumeros.Substring(0, 2)}.{apenasNumeros.Substring(2, 3)}.{apenasNumeros.Substring(5, 3)}/{apenasNumeros.Substring(8, 4)}-{apenasNumeros.Substring(12, 2)}";
+        }
+        
+        return cpfcnpj;
+    }
+}
+
+<style>
+    .action-btn:hover {
+        transform: translateY(-2px) scale(1.1);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+    }
+    
+    .action-btn:active {
+        transform: translateY(0) scale(0.95);
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: #f8f9fa;
+        transition: background-color 0.2s ease;
+    }
+    
+    .rounded-pill {
+        transition: all 0.3s ease;
+    }
+    
+    .rounded-pill:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    /* Estilos para ordenação */
+    .sortable {
+        cursor: pointer;
+        user-select: none;
+        position: relative;
+        padding-right: 25px !important;
+    }
+
+    .sortable:hover {
+        opacity: 0.9;
+    }
+
+    .sortable::after {
+        content: '⇅';
+        position: absolute;
+        right: 8px;
+        font-size: 0.8em;
+        opacity: 0.7;
+    }
+
+    .sortable.sort-asc::after {
+        content: '↑';
+        opacity: 1;
+    }
+
+    .sortable.sort-desc::after {
+        content: '↓';
+        opacity: 1;
+    }
+
+    /* Estilos para filtro */
+    .filter-container {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .filter-input {
+        position: relative;
+    }
+
+    .filter-input input {
+        padding-left: 2.5rem;
+    }
+
+    .filter-input .search-icon {
+        position: absolute;
+        left: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+        font-size: 1.2rem;
+    }
+</style>
+
+<!-- Modal de Confirmação de Exclusão -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalLabel">
+                    <span style="font-size: 1.5em;">⚠️</span> Confirmar Exclusão
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-3">Tem certeza que deseja excluir o tomador <strong id="tomadorNomeDelete"></strong>?</p>
+                <p class="text-danger mb-0"><small>⚠️ Esta ação não pode ser desfeita.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form id="deleteForm" method="post" style="display: inline;">
+                    <input type="hidden" name="id" id="tomadorIdDelete" />
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">
+                        <span>🗑️</span> Excluir
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage as string))
+    {
+        <div data-toast-message="@ViewBag.ErrorMessage" data-toast-type="error" style="display: none;"></div>
+    }
+    <script>
+        // Configurar modal de exclusão
+        var deleteModal = document.getElementById('deleteModal');
+        if (deleteModal) {
+            deleteModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var tomadorId = button.getAttribute('data-tomador-id');
+                var tomadorNome = button.getAttribute('data-tomador-nome');
+                
+                var modalTitle = deleteModal.querySelector('#tomadorNomeDelete');
+                var modalIdInput = deleteModal.querySelector('#tomadorIdDelete');
+                var deleteForm = deleteModal.querySelector('#deleteForm');
+                
+                modalTitle.textContent = tomadorNome;
+                modalIdInput.value = tomadorId;
+                deleteForm.action = '@Url.Action("Delete", "Tomador")?id=' + tomadorId;
+            });
+        }
+
+        // Sistema de Filtro e Ordenação
+        (function() {
+            var table = document.getElementById('tomadoresTable');
+            var tbody = document.getElementById('tomadoresTableBody');
+            var filterInput = document.getElementById('filterInput');
+            var sortColumn = null;
+            var sortDirection = 'asc';
+            var allRows = Array.from(tbody.querySelectorAll('tr'));
+
+            // Função de filtro
+            function filterTable() {
+                var filterText = filterInput.value.toLowerCase().trim();
+                var visibleRows = 0;
+
+                allRows.forEach(function(row) {
+                    var text = '';
+                    // Busca em todos os dados da linha
+                    text += row.getAttribute('data-nome') || '';
+                    text += ' ' + (row.getAttribute('data-cpfcnpj') || '');
+                    text += ' ' + (row.getAttribute('data-cidade') || '');
+                    text += ' ' + (row.getAttribute('data-email') || '');
+                    text += ' ' + (row.getAttribute('data-endereco') || '');
+                    text += ' ' + (row.getAttribute('data-telefone') || '');
+
+                    if (text.includes(filterText)) {
+                        row.style.display = '';
+                        visibleRows++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                // Atualiza contador
+                document.getElementById('filteredCount').textContent = visibleRows;
+                
+                // Reaplica ordenação se houver
+                if (sortColumn) {
+                    sortTable(sortColumn, sortDirection, false);
+                }
+            }
+
+            // Função de ordenação
+            function sortTable(column, direction, updateUI) {
+                if (updateUI !== false) {
+                    sortColumn = column;
+                    sortDirection = direction;
+                }
+
+                var rows = Array.from(tbody.querySelectorAll('tr:not([style*="display: none"])'));
+                
+                rows.sort(function(a, b) {
+                    var aVal, bVal;
+
+                    switch(column) {
+                        case 'id':
+                            aVal = parseInt(a.getAttribute('data-id')) || 0;
+                            bVal = parseInt(b.getAttribute('data-id')) || 0;
+                            break;
+                        case 'nome':
+                            aVal = a.getAttribute('data-nome') || '';
+                            bVal = b.getAttribute('data-nome') || '';
+                            break;
+                        case 'cpfcnpj':
+                            aVal = a.getAttribute('data-cpfcnpj') || '';
+                            bVal = b.getAttribute('data-cpfcnpj') || '';
+                            break;
+                        case 'tipo':
+                            aVal = a.getAttribute('data-tipo') || '';
+                            bVal = b.getAttribute('data-tipo') || '';
+                            break;
+                        case 'endereco':
+                            aVal = a.getAttribute('data-endereco') || '';
+                            bVal = b.getAttribute('data-endereco') || '';
+                            break;
+                        case 'cidade':
+                            aVal = a.getAttribute('data-cidade') || '';
+                            bVal = b.getAttribute('data-cidade') || '';
+                            break;
+                        case 'telefone':
+                            aVal = a.getAttribute('data-telefone') || '';
+                            bVal = b.getAttribute('data-telefone') || '';
+                            break;
+                        default:
+                            return 0;
+                    }
+
+                    if (typeof aVal === 'number' && typeof bVal === 'number') {
+                        return direction === 'asc' ? aVal - bVal : bVal - aVal;
+                    } else {
+                        var comparison = aVal.localeCompare(bVal, 'pt-BR', { sensitivity: 'base' });
+                        return direction === 'asc' ? comparison : -comparison;
+                    }
+                });
+
+                // Reordena as linhas no DOM
+                rows.forEach(function(row) {
+                    tbody.appendChild(row);
+                });
+
+                // Atualiza UI dos cabeçalhos
+                if (updateUI !== false) {
+                    updateSortIndicators();
+                }
+            }
+
+            // Atualiza indicadores visuais de ordenação
+            function updateSortIndicators() {
+                var headers = table.querySelectorAll('th.sortable');
+                headers.forEach(function(header) {
+                    header.classList.remove('sort-asc', 'sort-desc');
+                    if (header.getAttribute('data-column') === sortColumn) {
+                        header.classList.add('sort-' + sortDirection);
+                    }
+                });
+            }
+
+            // Event listeners
+            if (filterInput) {
+                filterInput.addEventListener('input', filterTable);
+            }
+
+            // Ordenação ao clicar nos cabeçalhos
+            var sortableHeaders = table.querySelectorAll('th.sortable');
+            sortableHeaders.forEach(function(header) {
+                header.addEventListener('click', function() {
+                    var column = this.getAttribute('data-column');
+                    var newDirection = (sortColumn === column && sortDirection === 'asc') ? 'desc' : 'asc';
+                    sortTable(column, newDirection);
+                });
+            });
+        })();
+    </script>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-1">Tomadores Cadastrados</h2>
+        <p class="text-muted mb-0">Lista de todos os tomadores cadastrados</p>
+    </div>
+    <div>
+        <a asp-action="CreatePorCNPJ" class="btn btn-success me-2 rounded-pill">
+            <span style="font-size: 1.1em;">➕</span> Cadastrar por CNPJ
+        </a>
+        <a asp-action="Create" class="btn btn-primary rounded-pill">
+            <span style="font-size: 1.1em;">➕</span> Cadastrar Manual
+        </a>
+    </div>
+</div>
+
+@if (Model != null && Model.Items.Any())
+{
+    <div class="card shadow-sm border-0">
+        <div class="filter-container">
+            <div class="filter-input">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="filterInput" class="form-control" placeholder="Buscar por nome, CPF/CNPJ, cidade, email..." />
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table id="tomadoresTable" class="table table-hover mb-0 align-middle">
+                    <thead style="background: linear-gradient(135deg, var(--theme-primary-gradient-start) 0%, var(--theme-primary-gradient-end) 100%); color: white;">
+                        <tr>
+                            <th class="ps-3 sortable" data-column="id" style="color: white; font-weight: 600;">ID</th>
+                            <th class="sortable" data-column="nome" style="color: white; font-weight: 600;">Nome/Razão Social</th>
+                            <th class="sortable" data-column="cpfcnpj" style="color: white; font-weight: 600;">CPF/CNPJ</th>
+                            <th class="sortable" data-column="tipo" style="color: white; font-weight: 600;">Tipo</th>
+                            <th class="sortable" data-column="endereco" style="color: white; font-weight: 600;">Endereço</th>
+                            <th class="sortable" data-column="cidade" style="color: white; font-weight: 600;">Cidade/UF</th>
+                            <th class="sortable" data-column="telefone" style="color: white; font-weight: 600;">Telefone</th>
+                            <th class="text-center pe-3" style="color: white; font-weight: 600;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tomadoresTableBody">
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr class="border-bottom" 
+                                data-id="@item.Id"
+                                data-nome="@item.RazaoSocialNome.ToLower()"
+                                data-cpfcnpj="@item.CPFCNPJ.Replace(".", "").Replace("/", "").Replace("-", "")"
+                                data-tipo="@(item.TipoPessoa == 1 ? "pessoa física" : "pessoa jurídica")"
+                                data-endereco="@($"{item.Endereco} {item.Numero} {item.Complemento} {item.Bairro}".ToLower())"
+                                data-cidade="@($"{item.Cidade} {item.UF}".ToLower())"
+                                data-telefone="@(item.Telefone ?? "")"
+                                data-email="@(item.Email?.ToLower() ?? "")">
+                                <td class="ps-3" data-sort-id="@item.Id"><strong class="text-muted">#@item.Id</strong></td>
+                                <td data-sort-nome="@item.RazaoSocialNome.ToLower()">
+                                    <strong>@item.RazaoSocialNome</strong>
+                                    @if (!string.IsNullOrEmpty(item.Email))
+                                    {
+                                        <br />
+                                        <small class="text-muted">
+                                            📧 @item.Email
+                                        </small>
+                                    }
+                                </td>
+                                <td data-sort-cpfcnpj="@item.CPFCNPJ.Replace(".", "").Replace("/", "").Replace("-", "")">
+                                    <code>@FormatarCPFCNPJ(item.CPFCNPJ)</code>
+                                </td>
+                                <td data-sort-tipo="@item.TipoPessoa">
+                                    @if (item.TipoPessoa == 1)
+                                    {
+                                        <span class="badge bg-info">Pessoa Física</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-primary">Pessoa Jurídica</span>
+                                    }
+                                </td>
+                                <td data-sort-endereco="@($"{item.Endereco} {item.Numero}".ToLower())">
+                                    @item.Endereco, @item.Numero
+                                    @if (!string.IsNullOrEmpty(item.Complemento))
+                                    {
+                                        <br />
+                                        <small class="text-muted">@item.Complemento</small>
+                                    }
+                                    @if (!string.IsNullOrEmpty(item.Bairro))
+                                    {
+                                        <br />
+                                        <small class="text-muted">@item.Bairro</small>
+                                    }
+                                    @if (!string.IsNullOrEmpty(item.CEP))
+                                    {
+                                        <br />
+                                        <small class="text-muted">CEP: @item.CEP</small>
+                                    }
+                                </td>
+                                <td data-sort-cidade="@item.Cidade.ToLower()">
+                                    @item.Cidade<br />
+                                    <span class="badge bg-secondary">@item.UF</span>
+                                </td>
+                                <td data-sort-telefone="@(item.Telefone ?? "")">
+                                    @if (!string.IsNullOrEmpty(item.Telefone))
+                                    {
+                                        <span>@item.Telefone</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td class="pe-3">
+                                    <div class="d-flex gap-2 justify-content-center">
+                                        <a asp-action="Details" asp-route-id="@item.Id" 
+                                           class="btn btn-sm btn-info rounded-circle action-btn" 
+                                           title="Ver detalhes"
+                                           style="width: 40px; height: 40px; padding: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.2em; border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: all 0.3s ease;">
+                                            👁️
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@item.Id" 
+                                           class="btn btn-sm btn-warning rounded-circle action-btn" 
+                                           title="Editar"
+                                           style="width: 40px; height: 40px; padding: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.2em; border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: all 0.3s ease;">
+                                            ✏️
+                                        </a>
+                                        <button type="button" 
+                                                class="btn btn-sm btn-danger rounded-circle action-btn" 
+                                                title="Excluir"
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#deleteModal"
+                                                data-tomador-id="@item.Id"
+                                                data-tomador-nome="@item.RazaoSocialNome"
+                                                style="width: 40px; height: 40px; padding: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.2em; border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: all 0.3s ease;">
+                                            🗑️
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer bg-light mt-0 border-0">
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">
+                        <span style="font-size: 1.1em;">📊</span> 
+                        Total: <strong class="text-primary" id="totalCount">@Model.TotalCount</strong> | 
+                        Exibindo: <strong class="text-primary" id="filteredCount">@Model.Items.Count()</strong> de @Model.TotalCount | 
+                        Página <strong>@Model.PageNumber</strong> de <strong>@Model.TotalPages</strong>
+                    </small>
+                    <small class="text-muted">
+                        Última atualização: @DateTime.Now.ToString("dd/MM/yyyy HH:mm")
+                    </small>
+                </div>
+            </div>
+        </div>
+        
+        @* Paginação *@
+        @if (Model.TotalPages > 1)
+        {
+            <div class="mt-3 mb-3">
+                @await Html.PartialAsync("_Pagination", Model)
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="card shadow-sm">
+        <div class="card-body text-center py-5">
+            <div class="mb-3">
+                <span style="font-size: 4rem;">👥</span>
+            </div>
+            <h4 class="text-muted">Nenhum tomador cadastrado</h4>
+            <p class="text-muted mb-4">Comece cadastrando seu primeiro tomador</p>
+            <div>
+                <a asp-action="CreatePorCNPJ" class="btn btn-success me-2 rounded-pill">
+                    <span style="font-size: 1.1em;">➕</span> Cadastrar por CNPJ
+                </a>
+                <a asp-action="Create" class="btn btn-primary rounded-pill">
+                    <span style="font-size: 1.1em;">➕</span> Cadastrar Manualmente
+                </a>
+            </div>
+        </div>
+    </div>
+}
+

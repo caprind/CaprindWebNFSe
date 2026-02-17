@@ -1,0 +1,1102 @@
+@model NFSe2026.Web.Models.PagedResultViewModel<NFSe2026.Web.Models.NotaFiscalViewModel>
+@{
+    ViewData["Title"] = "Notas Fiscais";
+    var token = Context.Session.GetString("JWTToken") ?? "";
+}
+
+@functions {
+    string FormatarSituacao(int situacao)
+    {
+        return situacao switch
+        {
+            1 => "Rascunho",
+            2 => "Autorizada",
+            3 => "Cancelada",
+            4 => "Rejeitada",
+            5 => "Enviada",
+            _ => "Desconhecida"
+        };
+    }
+
+    string ObterBadgeClass(int situacao)
+    {
+        return situacao switch
+        {
+            1 => "bg-secondary",
+            2 => "bg-success",
+            3 => "bg-danger",
+            4 => "bg-warning",
+            5 => "bg-info",
+            _ => "bg-secondary"
+        };
+    }
+}
+
+<style>
+    .action-btn:hover {
+        transform: translateY(-2px) scale(1.1);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+    }
+    
+    .action-btn:active {
+        transform: translateY(0) scale(0.95);
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: #f8f9fa;
+        transition: background-color 0.2s ease;
+    }
+    
+    .rounded-pill {
+        transition: all 0.3s ease;
+    }
+    
+    .rounded-pill:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    /* Estilos para ordenação */
+    .sortable {
+        cursor: pointer;
+        user-select: none;
+        position: relative;
+        padding-right: 25px !important;
+    }
+
+    .sortable:hover {
+        opacity: 0.9;
+    }
+
+    .sortable::after {
+        content: '⇅';
+        position: absolute;
+        right: 8px;
+        font-size: 0.8em;
+        opacity: 0.7;
+    }
+
+    .sortable.sort-asc::after {
+        content: '↑';
+        opacity: 1;
+    }
+
+    .sortable.sort-desc::after {
+        content: '↓';
+        opacity: 1;
+    }
+
+    /* Estilos para filtro */
+    .filter-container {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .filter-input {
+        position: relative;
+    }
+
+    .filter-input input {
+        padding-left: 2.5rem;
+    }
+
+    .filter-input .search-icon {
+        position: absolute;
+        left: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+        font-size: 1.2rem;
+    }
+</style>
+
+<!-- Modal de Motivo da Rejeição -->
+<div class="modal fade" id="motivoRejeicaoModal" tabindex="-1" aria-labelledby="motivoRejeicaoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title" id="motivoRejeicaoModalLabel">
+                    <span style="font-size: 1.5em;">🔍</span> Motivo da Rejeição
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-2"><strong>Nota Fiscal:</strong> <span id="notaNumeroRejeicao">#</span></p>
+                <div class="alert alert-warning mb-0">
+                    <strong>Motivo:</strong>
+                    <div id="motivoRejeicaoConteudo" class="mt-2" style="white-space: pre-wrap; word-wrap: break-word;">
+                        Carregando...
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmação para Reverter para Rascunho -->
+<div class="modal fade" id="reverterModal" tabindex="-1" aria-labelledby="reverterModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="reverterModalLabel">
+                    <span style="font-size: 1.5em;">↩️</span> Reverter para Rascunho
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-3">Tem certeza que deseja reverter a nota fiscal <strong id="notaNumeroReverter">#</strong> de <strong>Rejeitada</strong> para <strong>Rascunho</strong>?</p>
+                <p class="text-muted mb-0"><small>Após reverter, você poderá editar a nota e tentar emitir novamente.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form id="reverterForm" asp-action="ReverterParaRascunho" method="post" style="display: inline;">
+                    <input type="hidden" name="id" id="notaIdReverter" />
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-success">
+                        <span>↩️</span> Reverter para Rascunho
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmação de Cancelamento -->
+<div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title" id="cancelModalLabel">
+                    <span style="font-size: 1.5em;">⚠️</span> Confirmar Cancelamento
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-3">Tem certeza que deseja cancelar a nota fiscal <strong id="notaNumeroCancel"></strong>?</p>
+                <p class="text-danger mb-0"><small>⚠️ Esta ação não pode ser desfeita.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form id="cancelForm" method="post" style="display: inline;">
+                    <input type="hidden" name="id" id="notaIdCancel" />
+                    <input type="hidden" name="motivo" value="Cancelamento solicitado pelo usuário" />
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-warning">
+                        <span>⚠️</span> Confirmar Cancelamento
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmação de Exclusão -->
+<div class="modal fade" id="excluirModal" tabindex="-1" aria-labelledby="excluirModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="excluirModalLabel">
+                    <span style="font-size: 1.5em;">⚠️</span> Confirmar Exclusão
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-3">Tem certeza que deseja excluir a nota fiscal <strong id="notaNumeroExcluir">#</strong>?</p>
+                <p class="text-danger mb-0"><small>⚠️ Esta ação não pode ser desfeita. Apenas notas em Rascunho podem ser excluídas.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form id="excluirForm" asp-action="Delete" method="post" style="display: inline;">
+                    <input type="hidden" name="id" id="notaIdExcluir" />
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">
+                        <span>🗑️</span> Excluir
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmação de Emissão -->
+<div class="modal fade" id="emitirModal" tabindex="-1" aria-labelledby="emitirModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="emitirModalLabel">
+                    <span style="font-size: 1.5em;">📤</span> Confirmar Emissão
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-3">Deseja emitir a nota fiscal #<strong id="notaIdEmitir"></strong> na API Nacional?</p>
+                <p class="text-muted mb-0"><small>A nota será enviada para emissão e o status será atualizado.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form id="emitirForm" method="post" style="display: inline;">
+                    <input type="hidden" name="id" id="notaIdEmitirForm" />
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-primary">
+                        <span>📤</span> Emitir
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmação para Copiar Nota Fiscal -->
+<div class="modal fade" id="copiarModal" tabindex="-1" aria-labelledby="copiarModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="copiarModalLabel">
+                    <span style="font-size: 1.5em;">📋</span> Copiar Nota Fiscal
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-3">Deseja copiar a nota fiscal #<strong id="notaIdCopiar"></strong>?</p>
+                <p class="text-muted mb-0"><small>Uma nova nota fiscal será criada em Rascunho com os mesmos dados. Você poderá editá-la antes de emitir.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form id="copiarForm" method="post" style="display: inline;">
+                    <input type="hidden" name="id" id="notaIdCopiarForm" />
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-info text-white">
+                        <span>📋</span> Copiar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmação para Visualizar PDF -->
+<div class="modal fade" id="visualizarPDFModal" tabindex="-1" aria-labelledby="visualizarPDFModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="visualizarPDFModalLabel">
+                    <span style="font-size: 1.5em;">✅</span> Nota Fiscal Autorizada
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-3">Sua nota fiscal foi autorizada com sucesso!</p>
+                <p class="mb-0">Deseja visualizar o PDF da nota fiscal agora?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Agora não</button>
+                <button type="button" class="btn btn-success" id="btnVisualizarPDF">
+                    <span>📄</span> Sim, visualizar PDF
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Visualizar PDF ou Enviar por Email -->
+<div class="modal fade" id="enviarEmailModal" tabindex="-1" aria-labelledby="enviarEmailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="enviarEmailModalLabel">
+                    <span style="font-size: 1.5em;">📄</span> Opções do PDF
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p class="mb-4">Escolha uma opção:</p>
+                <div class="d-grid gap-3">
+                    <button type="button" class="btn btn-primary btn-lg" id="btnApenasVisualizarPDF" style="padding: 15px;">
+                        <svg style="width: 2em; height: 2em; display: block; margin: 0 auto 5px;" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
+                            <path d="M4.603 14.087a.81.81 0 0 1-.438-.42c-.195-.388-.13-.776.08-1.102.198-.307.526-.568.897-.787a7.68 7.68 0 0 1 1.482-.645 19.697 19.697 0 0 0 1.062-2.227 7.269 7.269 0 0 1-.43-1.295c-.086-.4-.119-.796-.046-1.136.075-.354.274-.672.65-.823.192-.077.4-.12.602-.077a.7.7 0 0 1 .477.365c.088.164.12.356.127.538.007.188-.012.396-.047.614-.084.51-.27 1.134-.52 1.794a10.954 10.954 0 0 0 .98 1.686 5.753 5.753 0 0 1 1.334.05c.364.066.734.195.96.465.12.144.193.32.2.518.007.192-.047.382-.138.563a1.04 1.04 0 0 1-.354.416.856.856 0 0 1-.51.138c-.331-.014-.654-.68-.884-1.35a5.59 5.59 0 0 0-.73-1.373 11.641 11.641 0 0 1-.978-1.637c-.244-.485-.387-.87-.432-1.19a6.601 6.601 0 0 1 .03-.85.7.7 0 0 1 .175-.31c.03-.03.08-.057.13-.074.265-.085.62-.096 1.076-.032a.95.95 0 0 1 .38.113.9.9 0 0 1 .21.204 5.27 5.27 0 0 1 .089.638c.076.62.12 1.327.087 2.046a19.64 19.64 0 0 1-.215 1.967c-.116.613-.29 1.184-.519 1.698a6.188 6.188 0 0 1-.97 1.458c-.31.347-.742.65-1.226.867a2.638 2.638 0 0 1-1.357.147 1.379 1.379 0 0 1-.6-.42 1.676 1.676 0 0 1-.37-.862z"/>
+                        </svg>
+                        <strong>PDF</strong>
+                    </button>
+                    <button type="button" class="btn btn-success btn-lg" id="btnEnviarEmailPDF" style="padding: 15px;">
+                        <span style="font-size: 2em; display: block; margin-bottom: 5px;">📧</span>
+                        <strong>Enviar por Email</strong>
+                    </button>
+                </div>
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" id="notaIdEnviarEmail" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage as string))
+    {
+        <div data-toast-message="@ViewBag.ErrorMessage" data-toast-type="error" style="display: none;"></div>
+    }
+    @if (TempData["ShowPDFDialogId"] != null)
+    {
+        <div data-show-pdf-dialog-id="@TempData["ShowPDFDialogId"]" style="display: none;"></div>
+    }
+    <!-- Toast Container Centralizado -->
+    <div class="toast-container position-fixed top-50 start-50 translate-middle p-3" style="z-index: 11;">
+        <div id="toastContainerCenter"></div>
+    </div>
+    <script>
+        // Função para exibir toast no centro da tela
+        function showToastCenter(message, type = 'info') {
+            if (!message) return;
+            
+            const escapedMessage = String(message).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+            
+            const toastConfig = {
+                success: {
+                    bgClass: 'bg-success',
+                    icon: '<span class="me-2">✓</span>',
+                    header: 'Sucesso'
+                },
+                error: {
+                    bgClass: 'bg-danger',
+                    icon: '<span class="me-2">✕</span>',
+                    header: 'Erro'
+                },
+                info: {
+                    bgClass: 'bg-info',
+                    icon: '<span class="me-2">ℹ</span>',
+                    header: 'Informação'
+                },
+                warning: {
+                    bgClass: 'bg-warning',
+                    icon: '<span class="me-2">⚠</span>',
+                    header: 'Aviso'
+                }
+            };
+
+            const config = toastConfig[type] || toastConfig.info;
+            const toastId = 'toast-center-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+
+            const toastHTML = `
+                <div id="${toastId}" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
+                    <div class="toast-header ${config.bgClass} text-white">
+                        ${config.icon}
+                        <strong class="me-auto">${config.header}</strong>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        ${escapedMessage}
+                    </div>
+                </div>
+            `;
+
+            const container = document.getElementById('toastContainerCenter');
+            if (container) {
+                container.innerHTML = toastHTML; // Substitui qualquer toast anterior
+                const toastElement = document.getElementById(toastId);
+                const toast = new bootstrap.Toast(toastElement);
+                toast.show();
+
+                toastElement.addEventListener('hidden.bs.toast', function () {
+                    toastElement.remove();
+                });
+            }
+        }
+        
+        // Configurar modal de motivo da rejeição
+        var motivoRejeicaoModal = document.getElementById('motivoRejeicaoModal');
+        if (motivoRejeicaoModal) {
+            motivoRejeicaoModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var notaId = button.getAttribute('data-nota-id');
+                
+                var modalTitle = motivoRejeicaoModal.querySelector('#notaNumeroRejeicao');
+                var motivoContent = motivoRejeicaoModal.querySelector('#motivoRejeicaoConteudo');
+                
+                if (modalTitle) modalTitle.textContent = '#' + notaId;
+                if (motivoContent) {
+                    motivoContent.textContent = 'Carregando...';
+                    
+                    // Busca o motivo da rejeição via API
+                    var authToken = '@(Context.Session.GetString("JWTToken") ?? "")';
+                    fetch('/api/notafiscal/' + notaId + '/motivo-rejeicao', {
+                        headers: {
+                            'Authorization': 'Bearer ' + authToken
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.motivoRejeicao) {
+                            motivoContent.textContent = data.motivoRejeicao;
+                        } else {
+                            motivoContent.textContent = 'Motivo da rejeição não disponível.';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro ao buscar motivo da rejeição:', error);
+                        motivoContent.textContent = 'Erro ao carregar motivo da rejeição.';
+                    });
+                }
+            });
+        }
+
+        // Configurar modal de reverter para rascunho
+        var reverterModal = document.getElementById('reverterModal');
+        if (reverterModal) {
+            reverterModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var notaId = button.getAttribute('data-nota-id');
+                
+                var modalTitle = reverterModal.querySelector('#notaNumeroReverter');
+                var modalIdInput = reverterModal.querySelector('#notaIdReverter');
+                
+                if (modalTitle) modalTitle.textContent = '#' + notaId;
+                if (modalIdInput) modalIdInput.value = notaId;
+            });
+        }
+
+        // Configurar modal de cancelamento
+        var cancelModal = document.getElementById('cancelModal');
+        if (cancelModal) {
+            cancelModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var notaId = button.getAttribute('data-nota-id');
+                var notaNumero = button.getAttribute('data-nota-numero') || 'N/A';
+                
+                var modalTitle = cancelModal.querySelector('#notaNumeroCancel');
+                var modalIdInput = cancelModal.querySelector('#notaIdCancel');
+                var cancelForm = cancelModal.querySelector('#cancelForm');
+                
+                modalTitle.textContent = notaNumero;
+                modalIdInput.value = notaId;
+                cancelForm.action = '@Url.Action("Cancelar", "NotaFiscal")?id=' + notaId;
+            });
+        }
+
+        // Configurar modal de emissão
+        var emitirModal = document.getElementById('emitirModal');
+        if (emitirModal) {
+            emitirModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var notaId = button.getAttribute('data-nota-id');
+                
+                var modalTitle = emitirModal.querySelector('#notaIdEmitir');
+                var modalIdInput = emitirModal.querySelector('#notaIdEmitirForm');
+                var emitirForm = emitirModal.querySelector('#emitirForm');
+                
+                modalTitle.textContent = notaId;
+                modalIdInput.value = notaId;
+                emitirForm.action = '@Url.Action("Emitir", "NotaFiscal")?id=' + notaId;
+            });
+            
+            // Interceptar submit do formulário de emissão
+            var emitirForm = emitirModal.querySelector('#emitirForm');
+            if (emitirForm) {
+                emitirForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    
+                    var notaId = document.getElementById('notaIdEmitirForm').value;
+                    var formData = new FormData(emitirForm);
+                    var token = emitirForm.querySelector('input[name="__RequestVerificationToken"]').value;
+                    
+                    // Fecha o modal
+                    var modalInstance = bootstrap.Modal.getInstance(emitirModal);
+                    if (modalInstance) modalInstance.hide();
+                    
+                    // Mostra toast de processamento
+                    showToastCenter('📤 Enviando nota fiscal...', 'info');
+                    
+                    // Envia a requisição de emissão via AJAX
+                    fetch('@Url.Action("Emitir", "NotaFiscal")?id=' + notaId, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(function(response) {
+                        // Sempre aguarda 3 segundos antes de consultar status
+                        setTimeout(function() {
+                            showToastCenter('⏳ Consultando status da nota...', 'info');
+                            
+                            // Consulta o status via AJAX
+                            var consultarFormData = new FormData();
+                            consultarFormData.append('id', notaId);
+                            consultarFormData.append('__RequestVerificationToken', token);
+                            
+                            fetch('@Url.Action("ConsultarStatus", "NotaFiscal")', {
+                                method: 'POST',
+                                body: consultarFormData
+                            })
+                            .then(function(response2) {
+                                // Abre o PDF após consultar status (independente do resultado)
+                                setTimeout(function() {
+                                    var pdfUrl = '/NotaFiscal/' + notaId + '/pdf';
+                                    window.open(pdfUrl, '_blank');
+                                    showToastCenter('✅ Processamento concluído! PDF aberto em nova aba.', 'success');
+                                    
+                                    // Recarrega a página após 1 segundo para atualizar a lista
+                                    setTimeout(function() {
+                                        window.location.href = '@Url.Action("Index", "NotaFiscal")';
+                                    }, 1000);
+                                }, 500);
+                            })
+                            .catch(function(error) {
+                                console.error('Erro ao consultar status:', error);
+                                // Ainda tenta abrir o PDF mesmo se a consulta falhar
+                                var pdfUrl = '/NotaFiscal/' + notaId + '/pdf';
+                                window.open(pdfUrl, '_blank');
+                                showToastCenter('⚠️ Erro ao consultar status, mas PDF será aberto...', 'warning');
+                                
+                                setTimeout(function() {
+                                    window.location.href = '@Url.Action("Index", "NotaFiscal")';
+                                }, 1000);
+                            });
+                        }, 3000);
+                    })
+                    .catch(function(error) {
+                        console.error('Erro ao emitir nota fiscal:', error);
+                        showToastCenter('❌ Erro ao emitir nota fiscal. Verifique os logs.', 'error');
+                        setTimeout(function() {
+                            window.location.href = '@Url.Action("Index", "NotaFiscal")';
+                        }, 2000);
+                    });
+                });
+            }
+        }
+
+        // Configurar modal de copiar
+        var copiarModal = document.getElementById('copiarModal');
+        if (copiarModal) {
+            copiarModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var notaId = button.getAttribute('data-nota-id');
+                
+                var modalTitle = copiarModal.querySelector('#notaIdCopiar');
+                var modalIdInput = copiarModal.querySelector('#notaIdCopiarForm');
+                var copiarForm = copiarModal.querySelector('#copiarForm');
+                
+                modalTitle.textContent = notaId;
+                modalIdInput.value = notaId;
+                copiarForm.action = '@Url.Action("Copiar", "NotaFiscal")?id=' + notaId;
+            });
+        }
+
+        // Configurar modal de enviar PDF por email
+        var enviarEmailModal = document.getElementById('enviarEmailModal');
+        if (enviarEmailModal) {
+            enviarEmailModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var notaId = button.getAttribute('data-nota-id');
+                
+                var notaIdInput = enviarEmailModal.querySelector('#notaIdEnviarEmail');
+                var btnApenasVisualizarPDF = enviarEmailModal.querySelector('#btnApenasVisualizarPDF');
+                var btnEnviarEmailPDF = enviarEmailModal.querySelector('#btnEnviarEmailPDF');
+                
+                if (notaIdInput) notaIdInput.value = notaId;
+                
+                // Botão "Visualizar PDF" - abre PDF diretamente
+                if (btnApenasVisualizarPDF) {
+                    btnApenasVisualizarPDF.onclick = function() {
+                        var pdfUrl = '/NotaFiscal/' + notaId + '/pdf';
+                        window.open(pdfUrl, '_blank');
+                        var modalInstance = bootstrap.Modal.getInstance(enviarEmailModal);
+                        if (modalInstance) modalInstance.hide();
+                    };
+                }
+                
+                // Botão "Enviar por Email" - envia via AJAX
+                if (btnEnviarEmailPDF) {
+                    btnEnviarEmailPDF.onclick = function() {
+                        // Obtém o token do anti-forgery do modal
+                        var tokenInput = enviarEmailModal.querySelector('input[name="__RequestVerificationToken"]');
+                        var token = tokenInput ? tokenInput.value : '';
+                        
+                        fetch('@Url.Action("EnviarEmail", "NotaFiscal")?id=' + notaId, {
+                            method: 'POST',
+                            headers: {
+                                'RequestVerificationToken': token,
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            body: 'id=' + encodeURIComponent(notaId) + '&__RequestVerificationToken=' + encodeURIComponent(token)
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            var modalInstance = bootstrap.Modal.getInstance(enviarEmailModal);
+                            if (modalInstance) modalInstance.hide();
+                            
+                            if (data.success) {
+                                showToastCenter(data.message || 'PDF enviado por email com sucesso!', 'success');
+                            } else {
+                                showToastCenter(data.message || 'Erro ao enviar PDF por email.', 'error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Erro ao enviar email:', error);
+                            var modalInstance = bootstrap.Modal.getInstance(enviarEmailModal);
+                            if (modalInstance) modalInstance.hide();
+                            showToastCenter('Erro ao enviar PDF por email. Tente novamente.', 'error');
+                        });
+                    };
+                }
+            });
+        }
+
+        // Sistema de Filtro e Ordenação
+        (function() {
+            var table = document.getElementById('notasFiscaisTable');
+            var tbody = document.getElementById('notasFiscaisTableBody');
+            var filterInput = document.getElementById('filterInput');
+            var sortColumn = null;
+            var sortDirection = 'asc';
+            var allRows = Array.from(tbody.querySelectorAll('tr'));
+
+            // Função de filtro
+            function filterTable() {
+                var filterText = filterInput.value.toLowerCase().trim();
+                var visibleRows = 0;
+
+                allRows.forEach(function(row) {
+                    var text = '';
+                    text += row.getAttribute('data-numero') || '';
+                    text += ' ' + (row.getAttribute('data-serie') || '');
+                    text += ' ' + (row.getAttribute('data-situacao') || '');
+                    text += ' ' + (row.getAttribute('data-tomador') || '');
+                    text += ' ' + (row.getAttribute('data-valor') || '');
+
+                    if (text.includes(filterText)) {
+                        row.style.display = '';
+                        visibleRows++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                // Atualiza contador
+                document.getElementById('filteredCount').textContent = visibleRows;
+                
+                // Reaplica ordenação se houver
+                if (sortColumn) {
+                    sortTable(sortColumn, sortDirection, false);
+                }
+            }
+
+            // Função de ordenação
+            function sortTable(column, direction, updateUI) {
+                if (updateUI !== false) {
+                    sortColumn = column;
+                    sortDirection = direction;
+                }
+
+                var rows = Array.from(tbody.querySelectorAll('tr:not([style*="display: none"])'));
+                
+                rows.sort(function(a, b) {
+                    var aVal, bVal;
+
+                    switch(column) {
+                        case 'id':
+                            aVal = parseInt(a.getAttribute('data-id')) || 0;
+                            bVal = parseInt(b.getAttribute('data-id')) || 0;
+                            break;
+                        case 'numero':
+                            aVal = a.getAttribute('data-numero') || '';
+                            bVal = b.getAttribute('data-numero') || '';
+                            break;
+                        case 'serie':
+                            aVal = a.getAttribute('data-serie') || '';
+                            bVal = b.getAttribute('data-serie') || '';
+                            break;
+                        case 'tomador':
+                            aVal = a.getAttribute('data-tomador') || '';
+                            bVal = b.getAttribute('data-tomador') || '';
+                            break;
+                        case 'data':
+                            aVal = new Date(a.getAttribute('data-data')) || new Date(0);
+                            bVal = new Date(b.getAttribute('data-data')) || new Date(0);
+                            break;
+                        case 'valor':
+                            aVal = parseFloat(a.getAttribute('data-valor-num')) || 0;
+                            bVal = parseFloat(b.getAttribute('data-valor-num')) || 0;
+                            break;
+                        case 'situacao':
+                            aVal = a.getAttribute('data-situacao-num') || '0';
+                            bVal = b.getAttribute('data-situacao-num') || '0';
+                            break;
+                        default:
+                            return 0;
+                    }
+
+                    if (typeof aVal === 'number' && typeof bVal === 'number') {
+                        return direction === 'asc' ? aVal - bVal : bVal - aVal;
+                    } else if (aVal instanceof Date && bVal instanceof Date) {
+                        return direction === 'asc' ? aVal - bVal : bVal - aVal;
+                    } else {
+                        var comparison = String(aVal).localeCompare(String(bVal), 'pt-BR', { sensitivity: 'base' });
+                        return direction === 'asc' ? comparison : -comparison;
+                    }
+                });
+
+                // Reordena as linhas no DOM
+                rows.forEach(function(row) {
+                    tbody.appendChild(row);
+                });
+
+                // Atualiza UI dos cabeçalhos
+                if (updateUI !== false) {
+                    updateSortIndicators();
+                }
+            }
+
+            // Atualiza indicadores visuais de ordenação
+            function updateSortIndicators() {
+                var headers = table.querySelectorAll('th.sortable');
+                headers.forEach(function(header) {
+                    header.classList.remove('sort-asc', 'sort-desc');
+                    if (header.getAttribute('data-column') === sortColumn) {
+                        header.classList.add('sort-' + sortDirection);
+                    }
+                });
+            }
+
+            // Event listeners
+            if (filterInput) {
+                filterInput.addEventListener('input', filterTable);
+            }
+
+            // Ordenação ao clicar nos cabeçalhos
+            var sortableHeaders = table.querySelectorAll('th.sortable');
+            sortableHeaders.forEach(function(header) {
+                header.addEventListener('click', function() {
+                    var column = this.getAttribute('data-column');
+                    var newDirection = (sortColumn === column && sortDirection === 'asc') ? 'desc' : 'asc';
+                    sortTable(column, newDirection);
+                });
+            });
+        })();
+
+        // Mostra diálogo para visualizar PDF após emissão bem-sucedida
+        document.addEventListener('DOMContentLoaded', function() {
+            var showPdfDialogElement = document.querySelector('[data-show-pdf-dialog-id]');
+            if (showPdfDialogElement) {
+                var notaId = showPdfDialogElement.getAttribute('data-show-pdf-dialog-id');
+                if (notaId && notaId.trim() !== '') {
+                    // Aguarda um delay para garantir que o Bootstrap está carregado
+                    setTimeout(function() {
+                        var modalElement = document.getElementById('visualizarPDFModal');
+                        if (modalElement && typeof bootstrap !== 'undefined') {
+                            try {
+                                var visualizarPDFModal = new bootstrap.Modal(modalElement);
+                                
+                                // Configura o botão de visualizar PDF
+                                var btnVisualizarPDF = document.getElementById('btnVisualizarPDF');
+                                if (btnVisualizarPDF) {
+                                    btnVisualizarPDF.onclick = function(e) {
+                                        e.preventDefault();
+                                        var pdfUrl = '/NotaFiscal/' + notaId + '/pdf';
+                                        
+                                        // Abre o PDF em uma nova aba
+                                        window.open(pdfUrl, '_blank');
+                                        
+                                        // Fecha o modal
+                                        visualizarPDFModal.hide();
+                                    };
+                                }
+                                
+                                // Mostra o modal
+                                visualizarPDFModal.show();
+                            } catch (error) {
+                                console.error('Erro ao mostrar modal de PDF:', error);
+                            }
+                        }
+                    }, 1000); // Delay de 1 segundo para garantir que tudo está carregado
+                }
+            }
+        });
+    </script>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-1">Notas Fiscais</h2>
+        <p class="text-muted mb-0">Lista de todas as notas fiscais cadastradas</p>
+    </div>
+    <div>
+        <a asp-action="Create" class="btn btn-primary rounded-pill">
+            <span style="font-size: 1.1em;">➕</span> Nova Nota Fiscal
+        </a>
+    </div>
+</div>
+
+@if (Model != null && Model.Items.Any())
+{
+    <div class="card shadow-sm border-0">
+        <div class="filter-container">
+            <div class="filter-input">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="filterInput" class="form-control" placeholder="Buscar por número, série, situação, tomador, valor..." />
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table id="notasFiscaisTable" class="table table-hover mb-0 align-middle">
+                    <thead style="background: linear-gradient(135deg, var(--theme-primary-gradient-start) 0%, var(--theme-primary-gradient-end) 100%); color: white;">
+                        <tr>
+                            <th class="ps-3 sortable" data-column="id" style="color: white; font-weight: 600;">ID</th>
+                            <th class="sortable" data-column="numero" style="color: white; font-weight: 600;">Número</th>
+                            <th class="sortable" data-column="serie" style="color: white; font-weight: 600;">Série</th>
+                            <th class="sortable" data-column="tomador" style="color: white; font-weight: 600;">Tomador</th>
+                            <th class="sortable" data-column="data" style="color: white; font-weight: 600;">Data Emissão</th>
+                            <th class="sortable" data-column="valor" style="color: white; font-weight: 600;">Valor</th>
+                            <th class="sortable" data-column="situacao" style="color: white; font-weight: 600;">Situação</th>
+                            <th class="text-center pe-3" style="color: white; font-weight: 600;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="notasFiscaisTableBody">
+                        @foreach (var item in Model.Items)
+                        {
+                            var numeroLower = (item.Numero ?? "").ToLower();
+                            var serieLower = item.Serie.ToLower();
+                            var valorLower = item.ValorLiquido.ToString("C").ToLower();
+                            var situacaoLower = FormatarSituacao(item.Situacao).ToLower();
+                            var tomadorLower = (item.TomadorNome ?? "").ToLower();
+                            <tr class="border-bottom" 
+                                data-id="@item.Id"
+                                data-numero="@numeroLower"
+                                data-serie="@serieLower"
+                                data-data="@item.DataEmissao.ToString("yyyy-MM-dd")"
+                                data-valor="@valorLower"
+                                data-valor-num="@item.ValorLiquido"
+                                data-situacao="@situacaoLower"
+                                data-situacao-num="@item.Situacao"
+                                data-tomador="@tomadorLower">
+                                <td class="ps-3"><strong class="text-muted">#@item.Id</strong></td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.Numero))
+                                    {
+                                        <code>@item.Numero</code>
+                                        @if (!string.IsNullOrEmpty(item.CodigoVerificacao))
+                                        {
+                                            <br />
+                                            <small class="text-muted">Cód. Verif.: @item.CodigoVerificacao</small>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td>@item.Serie</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.TomadorNome))
+                                    {
+                                        <strong>@item.TomadorNome</strong>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Não informado</span>
+                                    }
+                                </td>
+                                <td>@item.DataEmissao.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    <strong class="text-success">@item.ValorLiquido.ToString("C")</strong>
+                                </td>
+                                <td>
+                                    <span class="badge @ObterBadgeClass(item.Situacao)">@FormatarSituacao(item.Situacao)</span>
+                                </td>
+                                <td class="pe-3">
+                                    <div class="d-flex gap-2 justify-content-center">
+                                        <a asp-action="Details" asp-route-id="@item.Id" 
+                                           class="btn btn-sm btn-info rounded-circle action-btn" 
+                                           title="Ver detalhes"
+                                           style="width: 40px; height: 40px; padding: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.2em; border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: all 0.3s ease;">
+                                            👁️
+                                        </a>
+                                        <button type="button" 
+                                                class="btn btn-sm btn-info rounded-circle action-btn" 
+                                                title="Copiar nota fiscal"
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#copiarModal"
+                                                data-nota-id="@item.Id"
+                                                style="width: 40px; height: 40px; padding: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.2em; border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: all 0.3s ease; background-color: #17a2b8;">
+                                            📋
+                                        </button>
+                                        @if (item.Situacao == 1) // Rascunho
+                                        {
+                                            <a asp-action="Edit" asp-route-id="@item.Id"
+                                               class="btn btn-sm btn-warning rounded-circle action-btn"
+                                               title="Editar nota fiscal"
+                                               style="width: 40px; height: 40px; padding: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.2em; border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: all 0.3s ease;">
+                                                ✏️
+                                            </a>
+                                            <button type="button" 
+                                                    class="btn btn-sm btn-danger rounded-circle action-btn" 
+                                                    title="Excluir nota fiscal"
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#excluirModal"
+                                                    data-nota-id="@item.Id"
+                                                    style="width: 40px; height: 40px; padding: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.2em; border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: all 0.3s ease;">
+                                                🗑️
+                                            </button>
+                                            <button type="button" 
+                                                    class="btn btn-sm btn-primary rounded-circle action-btn" 
+                                                    title="Emitir nota fiscal"
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#emitirModal"
+                                                    data-nota-id="@item.Id"
+                                                    style="width: 40px; height: 40px; padding: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.2em; border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: all 0.3s ease;">
+                                                📤
+                                            </button>
+                                        }
+                                        @if (item.Situacao == 2) // Autorizada
+                                        {
+                                            <button type="button" 
+                                                    class="btn btn-sm btn-success rounded-circle action-btn" 
+                                                    title="PDF"
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#enviarEmailModal"
+                                                    data-nota-id="@item.Id"
+                                                    style="width: 40px; height: 40px; padding: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.2em; border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: all 0.3s ease;">
+                                                <svg style="width: 1.2em; height: 1.2em;" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
+                                                    <path d="M4.603 14.087a.81.81 0 0 1-.438-.42c-.195-.388-.13-.776.08-1.102.198-.307.526-.568.897-.787a7.68 7.68 0 0 1 1.482-.645 19.697 19.697 0 0 0 1.062-2.227 7.269 7.269 0 0 1-.43-1.295c-.086-.4-.119-.796-.046-1.136.075-.354.274-.672.65-.823.192-.077.4-.12.602-.077a.7.7 0 0 1 .477.365c.088.164.12.356.127.538.007.188-.012.396-.047.614-.084.51-.27 1.134-.52 1.794a10.954 10.954 0 0 0 .98 1.686 5.753 5.753 0 0 1 1.334.05c.364.066.734.195.96.465.12.144.193.32.2.518.007.192-.047.382-.138.563a1.04 1.04 0 0 1-.354.416.856.856 0 0 1-.51.138c-.331-.014-.654-.68-.884-1.35a5.59 5.59 0 0 0-.73-1.373 11.641 11.641 0 0 1-.978-1.637c-.244-.485-.387-.87-.432-1.19a6.601 6.601 0 0 1 .03-.85.7.7 0 0 1 .175-.31c.03-.03.08-.057.13-.074.265-.085.62-.096 1.076-.032a.95.95 0 0 1 .38.113.9.9 0 0 1 .21.204 5.27 5.27 0 0 1 .089.638c.076.62.12 1.327.087 2.046a19.64 19.64 0 0 1-.215 1.967c-.116.613-.29 1.184-.519 1.698a6.188 6.188 0 0 1-.97 1.458c-.31.347-.742.65-1.226.867a2.638 2.638 0 0 1-1.357.147 1.379 1.379 0 0 1-.6-.42 1.676 1.676 0 0 1-.37-.862z"/>
+                                                </svg>
+                                            </button>
+                                            <form asp-action="ConsultarStatus" method="post" style="display: inline;">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@item.Id" />
+                                                <button type="submit" 
+                                                        class="btn btn-sm btn-primary rounded-circle action-btn" 
+                                                        title="Consultar status atualizado"
+                                                        style="width: 40px; height: 40px; padding: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.2em; border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: all 0.3s ease;">
+                                                    🔄
+                                                </button>
+                                            </form>
+                                            <button type="button" 
+                                                    class="btn btn-sm btn-warning rounded-circle action-btn" 
+                                                    title="Cancelar nota fiscal"
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#cancelModal"
+                                                    data-nota-id="@item.Id"
+                                                    data-nota-numero="@(item.Numero ?? "N/A")"
+                                                    style="width: 40px; height: 40px; padding: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.2em; border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: all 0.3s ease;">
+                                                ⚠️
+                                            </button>
+                                        }
+                                        @if (item.Situacao == 5) // Enviada (aguardando autorização)
+                                        {
+                                            <form asp-action="ConsultarStatus" method="post" style="display: inline;">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@item.Id" />
+                                                <button type="submit" 
+                                                        class="btn btn-sm btn-primary rounded-circle action-btn" 
+                                                        title="Consultar status atualizado"
+                                                        style="width: 40px; height: 40px; padding: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.2em; border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: all 0.3s ease;">
+                                                    🔄
+                                                </button>
+                                            </form>
+                                        }
+                                        @if (item.Situacao == 4) // Rejeitada
+                                        {
+                                            <button type="button" 
+                                                    class="btn btn-sm btn-info rounded-circle action-btn" 
+                                                    title="Ver motivo da rejeição"
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#motivoRejeicaoModal"
+                                                    data-nota-id="@item.Id"
+                                                    style="width: 40px; height: 40px; padding: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.2em; border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: all 0.3s ease;">
+                                                🔍
+                                            </button>
+                                            <form asp-action="ConsultarStatus" method="post" style="display: inline;">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@item.Id" />
+                                                <button type="submit" 
+                                                        class="btn btn-sm btn-primary rounded-circle action-btn" 
+                                                        title="Consultar status atualizado"
+                                                        style="width: 40px; height: 40px; padding: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.2em; border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: all 0.3s ease;">
+                                                    🔄
+                                                </button>
+                                            </form>
+                                            <button type="button" 
+                                                    class="btn btn-sm btn-success rounded-circle action-btn" 
+                                                    title="Reverter para Rascunho"
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#reverterModal"
+                                                    data-nota-id="@item.Id"
+                                                    style="width: 40px; height: 40px; padding: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.2em; border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: all 0.3s ease;">
+                                                ↩️
+                                            </button>
+                                        }
+                                        @if (item.Situacao == 3) // Cancelada
+                                        {
+                                            <form asp-action="ConsultarStatus" method="post" style="display: inline;">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@item.Id" />
+                                                <button type="submit" 
+                                                        class="btn btn-sm btn-primary rounded-circle action-btn" 
+                                                        title="Consultar status atualizado"
+                                                        style="width: 40px; height: 40px; padding: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.2em; border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: all 0.3s ease;">
+                                                    🔄
+                                                </button>
+                                            </form>
+                                        }
+                                        @if (item.Situacao != 1 && item.Situacao != 2 && item.Situacao != 3 && item.Situacao != 4 && item.Situacao != 5) // Status desconhecido ou outros valores
+                                        {
+                                            <form asp-action="ConsultarStatus" method="post" style="display: inline;">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@item.Id" />
+                                                <button type="submit" 
+                                                        class="btn btn-sm btn-primary rounded-circle action-btn" 
+                                                        title="Consultar status atualizado"
+                                                        style="width: 40px; height: 40px; padding: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.2em; border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: all 0.3s ease;">
+                                                    🔄
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer bg-light mt-0 border-0">
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">
+                        <span style="font-size: 1.1em;">📊</span> 
+                        Total: <strong class="text-primary" id="totalCount">@Model.TotalCount</strong> | 
+                        Exibindo: <strong class="text-primary" id="filteredCount">@Model.Items.Count()</strong> de @Model.TotalCount | 
+                        Página <strong>@Model.PageNumber</strong> de <strong>@Model.TotalPages</strong>
+                    </small>
+                    <small class="text-muted">
+                        Última atualização: @DateTime.Now.ToString("dd/MM/yyyy HH:mm")
+                    </small>
+                </div>
+            </div>
+        </div>
+        
+        @* Paginação *@
+        @if (Model.TotalPages > 1)
+        {
+            <div class="mt-3 mb-3">
+                @await Html.PartialAsync("_Pagination", Model)
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="card shadow-sm">
+        <div class="card-body text-center py-5">
+            <div class="mb-3">
+                <span style="font-size: 4rem;">📄</span>
+            </div>
+            <h4 class="text-muted">Nenhuma nota fiscal cadastrada</h4>
+            <p class="text-muted mb-4">Comece criando sua primeira nota fiscal</p>
+            <div>
+                <a asp-action="Create" class="btn btn-primary rounded-pill">
+                    <span style="font-size: 1.1em;">➕</span> Nova Nota Fiscal
+                </a>
+            </div>
+        </div>
+    </div>
+}

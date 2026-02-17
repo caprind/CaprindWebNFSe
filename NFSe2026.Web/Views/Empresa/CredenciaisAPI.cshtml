@@ -1,0 +1,165 @@
+@model NFSe2026.Web.Models.EmpresaViewModel
+@{
+    ViewData["Title"] = "Credenciais da API";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-0">
+                <span style="font-size: 1.5em;">🔑</span> Credenciais da API Nacional NFSe
+            </h2>
+            <hr />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Cadastrar Credenciais da API</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model != null && Model.TemClientIdSecret)
+                    {
+                        <div class="alert alert-success">
+                            <strong>✅ Credenciais da API Cadastradas:</strong>
+                            <p class="mb-0">As credenciais (ClientId e ClientSecret) estão cadastradas e serão usadas para autenticação na API Nacional NFSe.</p>
+                        </div>
+                        
+                        <div class="alert alert-info mb-3">
+                            <strong>ℹ️ Para atualizar as credenciais:</strong> Preencha os campos abaixo com os novos valores. As credenciais atuais serão substituídas.
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            <strong>⚠️ Credenciais não cadastradas:</strong>
+                            <p class="mb-0">É necessário cadastrar o ClientId e ClientSecret da API Nacional NFSe para poder emitir notas fiscais.</p>
+                        </div>
+                    }
+
+                    <div class="alert alert-info">
+                        <strong>ℹ️ Informações:</strong>
+                        <ul class="mb-0">
+                            <li>As credenciais serão <strong>criptografadas</strong> antes de serem armazenadas no banco de dados</li>
+                            <li>As credenciais são específicas para cada empresa</li>
+                            <li>Você pode obter essas credenciais no portal da API Nacional NFSe</li>
+                            <li>As credenciais são necessárias para autenticação OAuth na API</li>
+                            <li>Se não tiver credenciais, o sistema tentará autenticar sem elas (pode falhar)</li>
+                        </ul>
+                    </div>
+
+                    <form asp-action="CredenciaisAPI" method="post" id="credenciaisForm">
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label for="clientId" class="form-label">
+                                <strong>ClientId</strong>
+                            </label>
+                            <div class="input-group">
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="clientId" 
+                                       name="clientId" 
+                                       required
+                                       autocomplete="off"
+                                       placeholder="Digite o ClientId da API Nacional NFSe" />
+                                <button class="btn btn-outline-secondary" 
+                                        type="button" 
+                                        id="toggleClientId"
+                                        title="Mostrar/Ocultar ClientId">
+                                    👁️
+                                </button>
+                            </div>
+                            <small class="form-text text-muted">
+                                O ClientId será criptografado antes de ser armazenado
+                            </small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="clientSecret" class="form-label">
+                                <strong>ClientSecret</strong>
+                            </label>
+                            <div class="input-group">
+                                <input type="password" 
+                                       class="form-control" 
+                                       id="clientSecret" 
+                                       name="clientSecret" 
+                                       required
+                                       autocomplete="off"
+                                       placeholder="Digite o ClientSecret da API Nacional NFSe" />
+                                <button class="btn btn-outline-secondary" 
+                                        type="button" 
+                                        id="toggleClientSecret"
+                                        title="Mostrar/Ocultar ClientSecret">
+                                    👁️
+                                </button>
+                            </div>
+                            <small class="form-text text-muted">
+                                O ClientSecret será criptografado antes de ser armazenado
+                            </small>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <strong>⚠️ Atenção:</strong>
+                            <ul class="mb-0">
+                                <li>Certifique-se de que as credenciais estão corretas</li>
+                                <li>As credenciais são sensíveis - mantenha-as seguras</li>
+                                <li>Não compartilhe essas credenciais com terceiros</li>
+                            </ul>
+                        </div>
+
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <span>💾</span> @(Model != null && Model.TemClientIdSecret ? "Atualizar" : "Salvar") Credenciais
+                            </button>
+                            @if (Model != null && Model.TemClientIdSecret)
+                            {
+                                <form asp-action="RemoverCredenciaisAPI" method="post" style="display: inline;" onsubmit="return confirm('Tem certeza que deseja remover as credenciais da API? Esta ação não pode ser desfeita.');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-danger">
+                                        <span>🗑️</span> Remover Credenciais
+                                    </button>
+                                </form>
+                            }
+                            <a asp-action="Edit" class="btn btn-secondary">
+                                <span>←</span> Voltar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Toggle mostrar/ocultar ClientId
+        document.getElementById('toggleClientId').addEventListener('click', function() {
+            var clientIdInput = document.getElementById('clientId');
+            if (clientIdInput.type === 'password') {
+                clientIdInput.type = 'text';
+                this.textContent = '🙈';
+            } else {
+                clientIdInput.type = 'text'; // ClientId geralmente não precisa ser password
+                this.textContent = '👁️';
+            }
+        });
+
+        // Toggle mostrar/ocultar ClientSecret
+        document.getElementById('toggleClientSecret').addEventListener('click', function() {
+            var clientSecretInput = document.getElementById('clientSecret');
+            if (clientSecretInput.type === 'password') {
+                clientSecretInput.type = 'text';
+                this.textContent = '🙈';
+            } else {
+                clientSecretInput.type = 'password';
+                this.textContent = '👁️';
+            }
+        });
+    </script>
+}
+

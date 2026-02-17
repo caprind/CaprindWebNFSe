@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-16"?>
+<DPS xmlns="http://www.sped.fazenda.gov.br/nfse" versao="1.01" Id="DPS-20251230200127-1">
+  <Serie>900</Serie>
+  <Competencia>2025-12</Competencia>
+  <Prestador>
+    <CpfCnpj>34270461000104</CpfCnpj>
+    <InscricaoMunicipal>1540624</InscricaoMunicipal>
+    <CodigoMunicipio>3520509</CodigoMunicipio>
+  </Prestador>
+  <Tomador>
+    <CpfCnpj>02926620000181</CpfCnpj>
+    <RazaoSocial>CASA DE PARAFUSOS FERRARETTO LTDA</RazaoSocial>
+    <Endereco>
+      <Logradouro>ARIO BARNABE</Logradouro>
+      <Numero>668</Numero>
+      <Bairro>JARDIM MORADA DO SOL</Bairro>
+      <CodigoMunicipio>3520509</CodigoMunicipio>
+      <UF>SP</UF>
+      <CEP>13346400</CEP>
+    </Endereco>
+  </Tomador>
+  <Servico>
+    <Codigo>111032200</Codigo>
+    <Descricao>Serviço de teste</Descricao>
+    <Aliquota>0.0000</Aliquota>
+    <Valor>
+      <Servico>197.00</Servico>
+      <DescontoIncondicionado>0.00</DescontoIncondicionado>
+      <DescontoCondicionado>0.00</DescontoCondicionado>
+    </Valor>
+    <NBS>111032200</NBS>
+    <Impostos>
+      <PIS>12.00</PIS>
+      <COFINS>5.00</COFINS>
+      <CSLL>14.00</CSLL>
+      <IRPJ>7.00</IRPJ>
+      <ISS>3.00</ISS>
+      <INSS>2.00</INSS>
+    </Impostos>
+  </Servico>
+  <RegimeEspecialTributacao>Nenhum</RegimeEspecialTributacao>
+  <OptanteSimplesNacional>true</OptanteSimplesNacional>
+  <IncentivoFiscal>false</IncentivoFiscal>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" /><SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" /><Reference URI="#DPS-20251230200127-1"><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" /><DigestValue>KqjpMXwJvQciGjT80quO/GRTm4aQgscxwW9D1DMI7m4=</DigestValue></Reference></SignedInfo><SignatureValue>mRfCvLex6VhydonkSvl14RqXlbFZ6ZuROXboIzy7TmnR6BQIzMCvSjYu9YlrdmB179HI5pC1wW4EQmov8VCwSM/oXWwrTEleQLsTck7Yj6Z9LfLNh92ewJWtN0PKNMkuQw2WPxRVaepfeUxnyylNttK1/lFYJHLE1pSGXxXmnBdKXFc4A6XPWUmp39FldphBMicsLj4z85P5SS+/UcqPRcNPQ24dCN5XOVT3SqyyNsdIHiiqvGIweqZJaOho25gMJZ9zdkfFr782mAL7b3AF45BR7sHXeXRR5pUAgGj1Kjy87ch5f40CIuZE5SIvYZ1l3CnIUaj/S1R/R7Bn3TNA6g==</SignatureValue><KeyInfo><X509Data><X509Certificate>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</X509Certificate></X509Data></KeyInfo></Signature></DPS>

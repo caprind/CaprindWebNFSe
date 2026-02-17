@@ -1,0 +1,72 @@
+@model NFSe2026.Web.Models.TomadorViewModel
+@{
+    ViewData["Title"] = "Excluir Tomador";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-danger text-white">
+        <h4 class="mb-0">
+            <span style="font-size: 1.5em;">⚠️</span> Confirmar Exclusão de Tomador
+        </h4>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-warning" role="alert">
+            <strong>⚠️ Atenção!</strong> Tem certeza que deseja excluir o tomador abaixo? Esta ação não pode ser desfeita.
+        </div>
+
+        <dl class="row">
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.RazaoSocialNome)
+            </dt>
+            <dd class="col-sm-9">
+                <strong>@Html.DisplayFor(model => model.RazaoSocialNome)</strong>
+            </dd>
+
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.CPFCNPJ)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.CPFCNPJ)
+            </dd>
+
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.TipoPessoa)
+            </dt>
+            <dd class="col-sm-9">
+                @(Model.TipoPessoa == 1 ? "Pessoa Física" : "Pessoa Jurídica")
+            </dd>
+
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.Endereco)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.Endereco), @Html.DisplayFor(model => model.Numero)
+                @if (!string.IsNullOrEmpty(Model.Complemento))
+                {
+                    <text> - @Html.DisplayFor(model => model.Complemento)</text>
+                }
+            </dd>
+
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.Cidade)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.Cidade) - @Html.DisplayFor(model => model.UF)
+            </dd>
+        </dl>
+    </div>
+    <div class="card-footer bg-light">
+        <form asp-action="Delete" method="post" id="deleteForm">
+            <input type="hidden" asp-for="Id" />
+            @Html.AntiForgeryToken()
+            <div class="d-flex gap-2 justify-content-end">
+                <a asp-action="Index" class="btn btn-secondary">
+                    <span>←</span> Cancelar
+                </a>
+                <button type="submit" class="btn btn-danger">
+                    <span>🗑️</span> Confirmar Exclusão
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

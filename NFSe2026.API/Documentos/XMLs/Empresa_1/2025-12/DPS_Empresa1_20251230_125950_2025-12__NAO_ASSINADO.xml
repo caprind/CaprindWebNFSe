@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-16"?>
+<DPS xmlns="http://www.sped.fazenda.gov.br/nfse" versao="1.01" Id="DPS-20251230155950-1">
+  <Serie>900</Serie>
+  <Competencia>2025-12</Competencia>
+  <Prestador>
+    <CpfCnpj>34270461000104</CpfCnpj>
+    <InscricaoMunicipal>1540624</InscricaoMunicipal>
+    <CodigoMunicipio>3520509</CodigoMunicipio>
+  </Prestador>
+  <Tomador>
+    <CpfCnpj>05370378000109</CpfCnpj>
+    <RazaoSocial>ALEX FERRAMENTAS INDAIATUBA LTDA</RazaoSocial>
+    <Endereco>
+      <Logradouro>ARIO BARNABE</Logradouro>
+      <Numero>416</Numero>
+      <Bairro>JD MORADA DO SOL</Bairro>
+      <CodigoMunicipio>3520509</CodigoMunicipio>
+      <UF>SP</UF>
+      <CEP>13346400</CEP>
+    </Endereco>
+  </Tomador>
+  <Servico>
+    <Codigo>111032200</Codigo>
+    <Descricao>Testes</Descricao>
+    <Aliquota>0.0000</Aliquota>
+    <Valor>
+      <Servico>100.00</Servico>
+      <DescontoIncondicionado>0.00</DescontoIncondicionado>
+      <DescontoCondicionado>0.00</DescontoCondicionado>
+    </Valor>
+    <NBS>111032200</NBS>
+    <Impostos>
+      <PIS>0.00</PIS>
+      <COFINS>0.00</COFINS>
+      <CSLL>0.00</CSLL>
+      <IRPJ>0.00</IRPJ>
+      <ISS>0.00</ISS>
+      <INSS>0.00</INSS>
+    </Impostos>
+  </Servico>
+  <RegimeEspecialTributacao>Nenhum</RegimeEspecialTributacao>
+  <OptanteSimplesNacional>true</OptanteSimplesNacional>
+  <IncentivoFiscal>false</IncentivoFiscal>
+</DPS>

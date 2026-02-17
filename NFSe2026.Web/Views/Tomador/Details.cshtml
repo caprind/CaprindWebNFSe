@@ -1,0 +1,93 @@
+@model NFSe2026.Web.Models.TomadorViewModel
+@{
+    ViewData["Title"] = "Detalhes do Tomador";
+}
+
+<h2>Detalhes do Tomador</h2>
+<hr />
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RazaoSocialNome)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RazaoSocialNome)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CPFCNPJ)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CPFCNPJ)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TipoPessoa)
+        </dt>
+        <dd class="col-sm-10">
+            @(Model.TipoPessoa == 1 ? "Pessoa Física" : "Pessoa Jurídica")
+        </dd>
+
+        @if (!string.IsNullOrEmpty(Model.InscricaoEstadual))
+        {
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.InscricaoEstadual)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.InscricaoEstadual)
+            </dd>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.InscricaoMunicipal))
+        {
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.InscricaoMunicipal)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.InscricaoMunicipal)
+            </dd>
+        }
+
+        <dt class="col-sm-2">
+            Endereço
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Endereco), @Html.DisplayFor(model => model.Numero)
+            @if (!string.IsNullOrEmpty(Model.Complemento))
+            {
+                <text> - @Html.DisplayFor(model => model.Complemento)</text>
+            }
+            <br />
+            @Html.DisplayFor(model => model.Bairro) - @Html.DisplayFor(model => model.Cidade) - @Html.DisplayFor(model => model.UF)
+            <br />
+            CEP: @Html.DisplayFor(model => model.CEP)
+        </dd>
+
+        @if (!string.IsNullOrEmpty(Model.Email))
+        {
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Email)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Email)
+            </dd>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.Telefone))
+        {
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Telefone)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Telefone)
+            </dd>
+        }
+    </dl>
+</div>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a>
+    <a asp-action="Index" class="btn btn-secondary">Voltar para lista</a>
+</div>
+

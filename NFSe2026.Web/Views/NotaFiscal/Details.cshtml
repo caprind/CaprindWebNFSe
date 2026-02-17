@@ -1,0 +1,86 @@
+@model NFSe2026.Web.Models.NotaFiscalViewModel
+
+@{
+    ViewData["Title"] = "Detalhes da Nota Fiscal";
+}
+
+<h1>Detalhes da Nota Fiscal</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Numero)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Numero)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Serie)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Serie)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DataEmissao)
+        </dt>
+        <dd class="col-sm-10">
+            @Model.DataEmissao.ToString("dd/MM/yyyy HH:mm")
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ValorLiquido)
+        </dt>
+        <dd class="col-sm-10">
+            @Model.ValorLiquido.ToString("C")
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Situacao)
+        </dt>
+        <dd class="col-sm-10">
+            @switch (Model.Situacao)
+            {
+                case 1:
+                    <span class="badge bg-secondary">Rascunho</span>
+                    break;
+                case 2:
+                    <span class="badge bg-success">Autorizada</span>
+                    break;
+                case 3:
+                    <span class="badge bg-danger">Cancelada</span>
+                    break;
+                case 4:
+                    <span class="badge bg-warning">Rejeitada</span>
+                    break;
+                case 5:
+                    <span class="badge bg-info">Enviada</span>
+                    break;
+                default:
+                    <span class="badge bg-secondary">-</span>
+                    break;
+            }
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DiscriminacaoServicos)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DiscriminacaoServicos)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CodigoVerificacao)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CodigoVerificacao)
+        </dd>
+    </dl>
+</div>
+<div>
+    @if (Model.Situacao == 2)
+    {
+        <form asp-action="Cancelar" asp-route-id="@Model.Id" method="post" style="display: inline;">
+            <input type="hidden" name="motivo" value="Cancelamento solicitado pelo usuário" />
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja cancelar esta nota fiscal?');">Cancelar Nota Fiscal</button>
+        </form>
+    }
+    <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+</div>
+

@@ -1,0 +1,84 @@
+@model NFSe2026.Web.Models.PrestadorViewModel
+
+@{
+    ViewData["Title"] = "Detalhes do Prestador";
+}
+
+<h1>Detalhes do Prestador</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RazaoSocial)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RazaoSocial)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NomeFantasia)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NomeFantasia)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CNPJ)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CNPJ)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InscricaoMunicipal)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InscricaoMunicipal)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Endereco)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Endereco)
+        </dd>
+        <dt class="col-sm-2">
+            Cidade/UF
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Cidade)/@Html.DisplayFor(model => model.UF)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CEP)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CEP)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Telefone)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Telefone)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Ambiente)
+        </dt>
+        <dd class="col-sm-10">
+            @(Model.Ambiente == 1 ? "Homologação" : "Produção")
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Ativo)
+        </dt>
+        <dd class="col-sm-10">
+            @(Model.Ativo ? "Sim" : "Não")
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a>
+    <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+</div>
+

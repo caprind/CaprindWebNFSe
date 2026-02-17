@@ -1,0 +1,174 @@
+@model NFSe2026.Web.Models.NotaFiscalCreateViewModel
+
+@{
+    ViewData["Title"] = "Nova Nota Fiscal";
+}
+
+<h1>Nova Nota Fiscal</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-10">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="alert alert-info">
+                <strong>Prestador:</strong> A empresa logada será usada como prestador de serviços.
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group mb-3">
+                        <label asp-for="TomadorId" class="control-label"></label>
+                        <select asp-for="TomadorId" class="form-control" asp-items="@(new SelectList(Model.Tomadores, "Id", "RazaoSocialNome"))">
+                            <option value="">-- Selecione um Tomador --</option>
+                        </select>
+                        <span asp-validation-for="TomadorId" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group mb-3">
+                        <label asp-for="Serie" class="control-label"></label>
+                        <input asp-for="Serie" class="form-control" />
+                        <span asp-validation-for="Serie" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group mb-3">
+                        <label asp-for="Competencia" class="control-label"></label>
+                        <input asp-for="Competencia" class="form-control" type="date" />
+                        <span asp-validation-for="Competencia" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group mb-3">
+                        <label asp-for="ValorServicos" class="control-label"></label>
+                        <input asp-for="ValorServicos" class="form-control" type="number" step="0.0001" />
+                        <span asp-validation-for="ValorServicos" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="DiscriminacaoServicos" class="control-label"></label>
+                <textarea asp-for="DiscriminacaoServicos" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="DiscriminacaoServicos" class="text-danger"></span>
+            </div>
+
+            <!-- Seção de Códigos do Serviço -->
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="CodigoServico" class="control-label"></label>
+                        <input asp-for="CodigoServico" class="form-control" placeholder="Ex: 010701" value="010701" />
+                        <span asp-validation-for="CodigoServico" class="text-danger"></span>
+                        <small class="form-text text-muted">Código de tributação nacional conforme lista de serviços</small>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="ItemListaServico" class="control-label"></label>
+                        <input asp-for="ItemListaServico" class="form-control" placeholder="Ex: 111032200" value="111032200" />
+                        <span asp-validation-for="ItemListaServico" class="text-danger"></span>
+                        <small class="form-text text-muted">Código IBS - será convertido para NBS no XML</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="CodigoMunicipio" class="control-label"></label>
+                        <input asp-for="CodigoMunicipio" class="form-control" placeholder="Opcional - será usado o da empresa se não informado" />
+                        <span asp-validation-for="CodigoMunicipio" class="text-danger"></span>
+                        <small class="form-text text-muted">Código IBGE do município (opcional - será usado o código cadastrado na empresa se não informado)</small>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="ValorDeducoes" class="control-label"></label>
+                        <input asp-for="ValorDeducoes" class="form-control" type="number" step="0.0001" value="0" />
+                        <span asp-validation-for="ValorDeducoes" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção de Impostos -->
+            <div class="card mb-3">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">💰 Impostos e Contribuições</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label asp-for="ValorPis" class="control-label"></label>
+                                <input asp-for="ValorPis" class="form-control" type="number" step="0.0001" value="0" />
+                                <span asp-validation-for="ValorPis" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label asp-for="ValorCofins" class="control-label"></label>
+                                <input asp-for="ValorCofins" class="form-control" type="number" step="0.0001" value="0" />
+                                <span asp-validation-for="ValorCofins" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label asp-for="ValorCsll" class="control-label"></label>
+                                <input asp-for="ValorCsll" class="form-control" type="number" step="0.0001" value="0" />
+                                <span asp-validation-for="ValorCsll" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label asp-for="ValorIr" class="control-label"></label>
+                                <input asp-for="ValorIr" class="form-control" type="number" step="0.0001" value="0" />
+                                <span asp-validation-for="ValorIr" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label asp-for="ValorIss" class="control-label"></label>
+                                <input asp-for="ValorIss" class="form-control" type="number" step="0.0001" value="0" />
+                                <span asp-validation-for="ValorIss" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label asp-for="ValorInss" class="control-label"></label>
+                                <input asp-for="ValorInss" class="form-control" type="number" step="0.0001" value="0" />
+                                <span asp-validation-for="ValorInss" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-info mb-0">
+                        <small><strong>ℹ️ Informação:</strong> Os valores dos impostos são opcionais. Se não informados, serão considerados como zero (0,00).</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Observacoes" class="control-label"></label>
+                <textarea asp-for="Observacoes" class="form-control" rows="2"></textarea>
+                <span asp-validation-for="Observacoes" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <input type="submit" value="Emitir Nota Fiscal" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

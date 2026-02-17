@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-16"?>
+<DPS xmlns="http://www.sped.fazenda.gov.br/nfse" versao="1.01" Id="DPS-20251230154855-1">
+  <Serie>900</Serie>
+  <Competencia>2025-12</Competencia>
+  <Prestador>
+    <CpfCnpj>34270461000104</CpfCnpj>
+    <InscricaoMunicipal>1540624</InscricaoMunicipal>
+    <CodigoMunicipio>3520509</CodigoMunicipio>
+  </Prestador>
+  <Tomador>
+    <CpfCnpj>05370378000109</CpfCnpj>
+    <RazaoSocial>ALEX FERRAMENTAS INDAIATUBA LTDA</RazaoSocial>
+    <Endereco>
+      <Logradouro>ARIO BARNABE</Logradouro>
+      <Numero>416</Numero>
+      <Bairro>JD MORADA DO SOL</Bairro>
+      <CodigoMunicipio>3520509</CodigoMunicipio>
+      <UF>SP</UF>
+      <CEP>13346400</CEP>
+    </Endereco>
+  </Tomador>
+  <Servico>
+    <Codigo>111032200</Codigo>
+    <Descricao>Testes</Descricao>
+    <Aliquota>0.0000</Aliquota>
+    <Valor>
+      <Servico>100.00</Servico>
+      <DescontoIncondicionado>0.00</DescontoIncondicionado>
+      <DescontoCondicionado>0.00</DescontoCondicionado>
+    </Valor>
+    <NBS>111032200</NBS>
+    <Impostos>
+      <PIS>0.00</PIS>
+      <COFINS>0.00</COFINS>
+      <CSLL>0.00</CSLL>
+      <IRPJ>0.00</IRPJ>
+      <ISS>0.00</ISS>
+      <INSS>0.00</INSS>
+    </Impostos>
+  </Servico>
+  <RegimeEspecialTributacao>Nenhum</RegimeEspecialTributacao>
+  <OptanteSimplesNacional>true</OptanteSimplesNacional>
+  <IncentivoFiscal>false</IncentivoFiscal>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" /><SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" /><Reference URI="#DPS-20251230154855-1"><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" /><DigestValue>PWOGJWIKNO0iAAbjwkulBr5mGE764S4FbP6CvET4w60=</DigestValue></Reference></SignedInfo><SignatureValue>Y9M/qWc61WqW1ckwLt3f/J7ESFJ+QNPICsI7DgoPBni399j8pRQlOndeKK3liKcWodV+nCZs1Kbf+BqIsS02n61I4Vh9IyBYuyCoQ6sKSFX8JX/Y9af6NVDnzkOsFNv+pUChDmQnvsYg8bqvCUdxAWEsgT6giem+GeLcRUjJIpv8AOZIfFO3UE1YS277SQXnaOwMs4tlF2C2hlURtNsmC6SEuiRRwcIQAImBJCpF4Fs7eRSH1dPh7ASiN3dqccXP0Bd9LdY9qEADvyGjkXCJbiKrUz3a01zOBakeqAN0QaJfjpBRLfGq1TJDGG0fplhlAQ7JtEz//51jfwkUBv5qjA==</SignatureValue><KeyInfo><X509Data><X509Certificate>MIIH6DCCBdCgAwIBAgIKLmgbxolNn7sYpzANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJCUjEWMBQGA1UECwwNQUMgU3luZ3VsYXJJRDETMBEGA1UECgwKSUNQLUJyYXNpbDEfMB0GA1UEAwwWQUMgU3luZ3VsYXJJRCBNdWx0aXBsYTAeFw0yNTA4MDcxNjQ4MjhaFw0yNjA4MDcxNjQ4MjhaMIHTMQswCQYDVQQGEwJCUjETMBEGA1UECgwKSUNQLUJyYXNpbDEiMCAGA1UECwwZQ2VydGlmaWNhZG8gRGlnaXRhbCBQSiBBMTEZMBcGA1UECwwQVmlkZW9jb25mZXJlbmNpYTEXMBUGA1UECwwOMzMzOTk0MjgwMDAxMDgxHzAdBgNVBAsMFkFDIFN5bmd1bGFySUQgTXVsdGlwbGExNjA0BgNVBAMMLUZBQklPIENBUkRPU08gUk9EUklHVUVTIEZMT1JFUzozNDI3MDQ2MTAwMDEwNDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMcH6V9wfYKowmY8VcgbA0Bx2x+mqoPpFM0ExIU4F3jUyaFzLhtxZt6+ka7d+jpxyI2TiUQ9Wuo0oZBJgtHS+b4GJDuEUNLn6bgfpGtvEZUoxdo3osqTjLVn0IiTQSHVXat9LpRLCXS8NK7QEgJvYovVrBqD23Kf0RrVA6vfbd9lBZVukNd4q+9MWv3hIffpuz0omzfSbYN5UW+85912yTiNqySn6dUJ8ONqnbDdJ6Dib7dY8pFGAWUkh+spUAqTvhHyBpogQmJ3GSZjNiMtQovV/VIyxsY10bVjuplKCLhet7IrNdqfjnDrtWrPM9Uhcn3xenR4At0i/mXIl+B0o8sCAwEAAaOCAzMwggMvMA4GA1UdDwEB/wQEAwIF4DAdBgNVHSUEFjAUBggrBgEFBQcDBAYIKwYBBQUHAwIwCQYDVR0TBAIwADAfBgNVHSMEGDAWgBST4f9+HeX15E3hOWKLIWmV5q9yFjAdBgNVHQ4EFgQUoS1DX8BD6qE1PwlPsbejTw6koPowfwYIKwYBBQUHAQEEczBxMG8GCCsGAQUFBzAChmNodHRwOi8vc3luZ3VsYXJpZC5jb20uYnIvcmVwb3NpdG9yaW8vYWMtc3luZ3VsYXJpZC1tdWx0aXBsYS9jZXJ0aWZpY2Fkb3MvYWMtc3luZ3VsYXJpZC1tdWx0aXBsYS5wN2IwgYIGA1UdIAR7MHkwdwYHYEwBAgGBBTBsMGoGCCsGAQUFBwIBFl5odHRwOi8vc3luZ3VsYXJpZC5jb20uYnIvcmVwb3NpdG9yaW8vYWMtc3luZ3VsYXJpZC1tdWx0aXBsYS9kcGMvZHBjLWFjLXN5bmd1bGFySUQtbXVsdGlwbGEucGRmMIHHBgNVHREEgb8wgbygKQYFYEwBAwKgIAQeRkFCSU8gQ0FSRE9TTyBST0RSSUdVRVMgRkxPUkVToBkGBWBMAQMDoBAEDjM0MjcwNDYxMDAwMTA0oEIGBWBMAQMEoDkENzA4MTIxOTg0MzE2ODc4MDA4MTIwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDCgFwYFYEwBAwegDgQMMDAwMDAwMDAwMDAwgRdGQUJJT0NSRkxPUkVTQEdNQUlMLkNPTTCB4gYDVR0fBIHaMIHXMG+gbaBrhmlodHRwOi8vaWNwLWJyYXNpbC5zeW5ndWxhcmlkLmNvbS5ici9yZXBvc2l0b3Jpby9hYy1zeW5ndWxhcmlkLW11bHRpcGxhL2xjci9sY3ItYWMtc3luZ3VsYXJpZC1tdWx0aXBsYS5jcmwwZKBioGCGXmh0dHA6Ly9zeW5ndWxhcmlkLmNvbS5ici9yZXBvc2l0b3Jpby9hYy1zeW5ndWxhcmlkLW11bHRpcGxhL2xjci9sY3ItYWMtc3luZ3VsYXJpZC1tdWx0aXBsYS5jcmwwDQYJKoZIhvcNAQELBQADggIBAB/b/9viv3bX2AvSaJmNCUGdC5gBg1+CseiddxoeMNggBV2yD546ykxPc9wBMnTa63YPaBKFcTW9Pl4esGAmUFiphOlNwalRpDm8f4+tFJL+dtisCcIGPAHmFrx/0WgTG1BkCsQkjsbgGHgPrPlcQjQdSWCX+aNckw83iEnkt8ruwnPDKdabodTh6jZSts35VwSDNr4g+UVeYGEiKWUnYHjAD6v2PwehAjnamJ782WxVv8I3xwGqjVQ+emPJyEB3Nn5uX4Cew9qGAADEMvChAgUW4dgKnuIjhE40zrR7pqqLm8oVMWQWmJaNvQmZTKi5mGTdBKnlFp/MmGy0Yu/8JQJq8vChll6P7A7Ei2YP9jrNOyCkwN/yNlIrLwc3V2Vk+5SDuIp+zUTMfgI56Wp4pW2j0kNOKMSvuISKKC9rDTbHr+F0DZ/2kidT8bFqoKxFBqBRszBUinqTI2NuIGTyKDI3G5Rh9tjSSqG8VnGzoCJ41eMrAW3wqLzDMb+3zISLezH+dMCMUHGrKebvQ+GmWVLUukL7UdTDMEgjLeZir5Csf+6maJd7nOjx+CTlTu/77vSHEJl2vgb30XuaNfDdc9p/fS/xXS7OeasKO/SEypNrjaPfwJm9GH8slOHO52V4Q4RSt6AC1fRwpl4Rda4wo9GBJUrmRNNGANQxkkrlpBXv</X509Certificate></X509Data></KeyInfo></Signature></DPS>

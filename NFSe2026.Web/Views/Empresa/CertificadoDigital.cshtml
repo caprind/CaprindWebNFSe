@@ -1,0 +1,186 @@
+@model NFSe2026.Web.Models.EmpresaViewModel
+@{
+    ViewData["Title"] = "Certificado Digital";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-0">
+                <span style="font-size: 1.5em;">🔐</span> Certificado Digital
+            </h2>
+            <hr />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Cadastrar Certificado Digital</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model != null && Model.TemCertificadoDigital && Model.DataVencimentoCertificado.HasValue)
+                    {
+                        var diasRestantes = (Model.DataVencimentoCertificado.Value - DateTime.Now).Days;
+                        var classeAlerta = diasRestantes <= 30 ? "alert-danger" : diasRestantes <= 90 ? "alert-warning" : "alert-success";
+                        
+                        <div class="alert @classeAlerta">
+                            <strong>📅 Certificado Digital Cadastrado:</strong>
+                            <ul class="mb-0">
+                                <li><strong>Data de Vencimento:</strong> @Model.DataVencimentoCertificado.Value.ToString("dd/MM/yyyy")</li>
+                                <li><strong>Dias Restantes:</strong> @diasRestantes dia(s)</li>
+                                @if (diasRestantes <= 30)
+                                {
+                                    <li class="text-danger"><strong>⚠️ ATENÇÃO: Certificado próximo do vencimento! Renove o quanto antes.</strong></li>
+                                }
+                                else if (diasRestantes <= 90)
+                                {
+                                    <li class="text-warning"><strong>⚠️ Certificado vencendo em breve. Considere renovar.</strong></li>
+                                }
+                            </ul>
+                        </div>
+                        
+                        <div class="alert alert-info mb-3">
+                            <strong>ℹ️ Para atualizar o certificado:</strong> Faça upload de um novo arquivo abaixo. O certificado atual será substituído.
+                        </div>
+                    }
+                    else if (Model != null && Model.TemCertificadoDigital)
+                    {
+                        <div class="alert alert-info mb-3">
+                            <strong>📅 Certificado Digital Cadastrado:</strong>
+                            <p class="mb-0">Certificado digital cadastrado, mas a data de vencimento não está disponível.</p>
+                        </div>
+                        
+                        <div class="alert alert-info mb-3">
+                            <strong>ℹ️ Para atualizar o certificado:</strong> Faça upload de um novo arquivo abaixo. O certificado atual será substituído.
+                        </div>
+                    }
+
+                    <div class="alert alert-info">
+                        <strong>ℹ️ Informações:</strong>
+                        <ul class="mb-0">
+                            <li>O certificado digital deve estar no formato <strong>.pfx</strong> ou <strong>.p12</strong></li>
+                            <li>A senha do certificado será criptografada antes de ser armazenada</li>
+                            <li>O certificado será usado para assinar as notas fiscais eletrônicas</li>
+                            <li>Certificados válidos garantem a autenticidade das notas emitidas</li>
+                            <li>A data de vencimento será extraída automaticamente após o cadastro</li>
+                        </ul>
+                    </div>
+
+                    <form asp-action="CertificadoDigital" method="post" enctype="multipart/form-data" id="certificadoForm">
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label for="certificadoFile" class="form-label">
+                                <strong>Arquivo do Certificado Digital</strong>
+                            </label>
+                            <input type="file" 
+                                   class="form-control" 
+                                   id="certificadoFile" 
+                                   name="certificadoFile" 
+                                   accept=".pfx,.p12"
+                                   required />
+                            <small class="form-text text-muted">
+                                Formatos aceitos: .pfx ou .p12
+                            </small>
+                            <div id="fileError" class="text-danger" style="display: none;"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="senhaCertificado" class="form-label">
+                                <strong>Senha do Certificado</strong>
+                            </label>
+                            <div class="input-group">
+                                <input type="password" 
+                                       class="form-control" 
+                                       id="senhaCertificado" 
+                                       name="senhaCertificado" 
+                                       required
+                                       autocomplete="off" />
+                                <button class="btn btn-outline-secondary" 
+                                        type="button" 
+                                        id="toggleSenha"
+                                        title="Mostrar/Ocultar senha">
+                                    👁️
+                                </button>
+                            </div>
+                            <small class="form-text text-muted">
+                                A senha será criptografada antes de ser armazenada
+                            </small>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <strong>⚠️ Atenção:</strong>
+                            <ul class="mb-0">
+                                <li>Certifique-se de que a senha está correta</li>
+                                <li>O certificado deve estar válido e não expirado</li>
+                                <li>Mantenha uma cópia de segurança do certificado em local seguro</li>
+                            </ul>
+                        </div>
+
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <span>💾</span> @(Model != null && Model.TemCertificadoDigital ? "Atualizar" : "Salvar") Certificado
+                            </button>
+                            @if (Model != null && Model.TemCertificadoDigital)
+                            {
+                                <form asp-action="RemoverCertificadoDigital" method="post" style="display: inline;" onsubmit="return confirm('Tem certeza que deseja remover o certificado digital? Esta ação não pode ser desfeita.');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-danger">
+                                        <span>🗑️</span> Remover Certificado
+                                    </button>
+                                </form>
+                            }
+                            <a asp-action="Edit" class="btn btn-secondary">
+                                <span>←</span> Voltar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Validação de arquivo
+        document.getElementById('certificadoFile').addEventListener('change', function(e) {
+            var file = e.target.files[0];
+            var errorDiv = document.getElementById('fileError');
+            
+            if (file) {
+                var extensao = file.name.split('.').pop().toLowerCase();
+                if (extensao !== 'pfx' && extensao !== 'p12') {
+                    errorDiv.textContent = 'O arquivo deve ser .pfx ou .p12';
+                    errorDiv.style.display = 'block';
+                    e.target.value = '';
+                } else {
+                    errorDiv.style.display = 'none';
+                    
+                    // Mostra tamanho do arquivo
+                    var tamanhoMB = (file.size / (1024 * 1024)).toFixed(2);
+                    if (tamanhoMB > 5) {
+                        errorDiv.textContent = '⚠️ O arquivo é muito grande (' + tamanhoMB + ' MB). Certificados geralmente têm menos de 5 MB.';
+                        errorDiv.style.display = 'block';
+                    }
+                }
+            }
+        });
+
+        // Toggle mostrar/ocultar senha
+        document.getElementById('toggleSenha').addEventListener('click', function() {
+            var senhaInput = document.getElementById('senhaCertificado');
+            if (senhaInput.type === 'password') {
+                senhaInput.type = 'text';
+                this.textContent = '🙈';
+            } else {
+                senhaInput.type = 'password';
+                this.textContent = '👁️';
+            }
+        });
+    </script>
+}
+

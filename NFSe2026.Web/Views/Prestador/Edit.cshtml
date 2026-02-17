@@ -1,0 +1,125 @@
+@model NFSe2026.Web.Models.PrestadorCreateViewModel
+
+@{
+    ViewData["Title"] = "Editar Prestador";
+}
+
+<h1>Editar Prestador</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Edit" asp-route-id="@ViewBag.Id">
+            <input type="hidden" asp-for="CNPJ" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group mb-3">
+                        <label asp-for="RazaoSocial" class="control-label"></label>
+                        <input asp-for="RazaoSocial" class="form-control" />
+                        <span asp-validation-for="RazaoSocial" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group mb-3">
+                        <label asp-for="NomeFantasia" class="control-label"></label>
+                        <input asp-for="NomeFantasia" class="form-control" />
+                        <span asp-validation-for="NomeFantasia" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="CNPJ" class="control-label"></label>
+                        <input asp-for="CNPJ" class="form-control" readonly />
+                        <small class="form-text text-muted">CNPJ não pode ser alterado</small>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="InscricaoMunicipal" class="control-label"></label>
+                        <input asp-for="InscricaoMunicipal" class="form-control" />
+                        <span asp-validation-for="InscricaoMunicipal" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Endereco" class="control-label"></label>
+                <input asp-for="Endereco" class="form-control" />
+                <span asp-validation-for="Endereco" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group mb-3">
+                        <label asp-for="Cidade" class="control-label"></label>
+                        <input asp-for="Cidade" class="form-control" />
+                        <span asp-validation-for="Cidade" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group mb-3">
+                        <label asp-for="UF" class="control-label"></label>
+                        <input asp-for="UF" class="form-control" maxlength="2" />
+                        <span asp-validation-for="UF" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group mb-3">
+                        <label asp-for="CEP" class="control-label"></label>
+                        <input asp-for="CEP" class="form-control" maxlength="8" />
+                        <span asp-validation-for="CEP" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group mb-3">
+                        <label asp-for="Ambiente" class="control-label"></label>
+                        <select asp-for="Ambiente" class="form-control">
+                            <option value="1">Homologação</option>
+                            <option value="2">Produção</option>
+                        </select>
+                        <span asp-validation-for="Ambiente" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="Telefone" class="control-label"></label>
+                        <input asp-for="Telefone" class="form-control" />
+                        <span asp-validation-for="Telefone" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="Email" class="control-label"></label>
+                        <input asp-for="Email" class="form-control" type="email" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <div class="form-check">
+                    <input asp-for="Ativo" class="form-check-input" type="checkbox" />
+                    <label asp-for="Ativo" class="form-check-label"></label>
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <input type="submit" value="Salvar" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

@@ -1,0 +1,33 @@
+@model NFSe2026.Web.Models.TomadorPorCNPJViewModel
+@{
+    ViewData["Title"] = "Cadastrar Tomador por CNPJ";
+}
+
+<h2>Cadastrar Tomador por CNPJ</h2>
+<p class="text-muted">Os dados serão buscados automaticamente da Receita Federal</p>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="CreatePorCNPJ" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="CNPJ" class="form-label"></label>
+                <input asp-for="CNPJ" class="form-control" placeholder="00.000.000/0000-00" />
+                <span asp-validation-for="CNPJ" class="text-danger"></span>
+                <small class="form-text text-muted">Informe apenas o CNPJ. Os demais dados serão preenchidos automaticamente.</small>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Buscar e Cadastrar</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

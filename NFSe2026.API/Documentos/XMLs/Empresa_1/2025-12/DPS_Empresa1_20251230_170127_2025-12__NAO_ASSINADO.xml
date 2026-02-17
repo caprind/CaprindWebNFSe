@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-16"?>
+<DPS xmlns="http://www.sped.fazenda.gov.br/nfse" versao="1.01" Id="DPS-20251230200127-1">
+  <Serie>900</Serie>
+  <Competencia>2025-12</Competencia>
+  <Prestador>
+    <CpfCnpj>34270461000104</CpfCnpj>
+    <InscricaoMunicipal>1540624</InscricaoMunicipal>
+    <CodigoMunicipio>3520509</CodigoMunicipio>
+  </Prestador>
+  <Tomador>
+    <CpfCnpj>02926620000181</CpfCnpj>
+    <RazaoSocial>CASA DE PARAFUSOS FERRARETTO LTDA</RazaoSocial>
+    <Endereco>
+      <Logradouro>ARIO BARNABE</Logradouro>
+      <Numero>668</Numero>
+      <Bairro>JARDIM MORADA DO SOL</Bairro>
+      <CodigoMunicipio>3520509</CodigoMunicipio>
+      <UF>SP</UF>
+      <CEP>13346400</CEP>
+    </Endereco>
+  </Tomador>
+  <Servico>
+    <Codigo>111032200</Codigo>
+    <Descricao>Serviço de teste</Descricao>
+    <Aliquota>0.0000</Aliquota>
+    <Valor>
+      <Servico>197.00</Servico>
+      <DescontoIncondicionado>0.00</DescontoIncondicionado>
+      <DescontoCondicionado>0.00</DescontoCondicionado>
+    </Valor>
+    <NBS>111032200</NBS>
+    <Impostos>
+      <PIS>12.00</PIS>
+      <COFINS>5.00</COFINS>
+      <CSLL>14.00</CSLL>
+      <IRPJ>7.00</IRPJ>
+      <ISS>3.00</ISS>
+      <INSS>2.00</INSS>
+    </Impostos>
+  </Servico>
+  <RegimeEspecialTributacao>Nenhum</RegimeEspecialTributacao>
+  <OptanteSimplesNacional>true</OptanteSimplesNacional>
+  <IncentivoFiscal>false</IncentivoFiscal>
+</DPS>

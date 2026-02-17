@@ -1,0 +1,302 @@
+@model NFSe2026.Web.Models.EmpresaEditViewModel
+@{
+    ViewData["Title"] = "Editar Dados da Empresa";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-0">
+                <span style="font-size: 1.5em;">🏢</span> Editar Dados da Empresa
+            </h2>
+            <hr />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data" id="empresaForm">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="CNPJ" />
+                        <input type="hidden" asp-for="RazaoSocial" />
+
+                        <!-- Informações Básicas -->
+                        <h5 class="mb-3 text-primary">Informações Básicas</h5>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="CNPJ" class="form-label"></label>
+                                <input asp-for="CNPJ" class="form-control" readonly />
+                                <small class="form-text text-muted">CNPJ não pode ser alterado</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="RazaoSocial" class="form-label"></label>
+                                <input asp-for="RazaoSocial" class="form-control" readonly />
+                                <small class="form-text text-muted">Razão Social não pode ser alterada</small>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label asp-for="NomeFantasia" class="form-label"></label>
+                                <input asp-for="NomeFantasia" class="form-control" />
+                                <span asp-validation-for="NomeFantasia" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="InscricaoEstadual" class="form-label"></label>
+                                <input asp-for="InscricaoEstadual" class="form-control" />
+                                <span asp-validation-for="InscricaoEstadual" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="InscricaoMunicipal" class="form-label"></label>
+                                <input asp-for="InscricaoMunicipal" class="form-control" />
+                                <span asp-validation-for="InscricaoMunicipal" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Logotipo -->
+                        <h5 class="mb-3 mt-4 text-primary">Logotipo</h5>
+                        <div class="mb-3">
+                            @if (!string.IsNullOrEmpty(Model.LogotipoAtual))
+                            {
+                                <div class="mb-2">
+                                    <label class="form-label">Logotipo Atual</label>
+                                    <div>
+                                        <img src="data:image/png;base64,@Model.LogotipoAtual" alt="Logotipo" 
+                                             style="max-width: 200px; max-height: 200px; border: 1px solid #ddd; padding: 5px; border-radius: 5px;" />
+                                    </div>
+                                </div>
+                            }
+                            <label for="logotipoFile" class="form-label">Alterar Logotipo</label>
+                            <input type="file" id="logotipoFile" name="logotipoFile" accept="image/*" class="form-control" />
+                            <small class="form-text text-muted">Formatos aceitos: JPG, PNG, GIF. Tamanho máximo recomendado: 500KB</small>
+                            <input type="hidden" asp-for="Logotipo" id="logotipoBase64" />
+                            <input type="hidden" asp-for="LogotipoAtual" />
+                        </div>
+
+                        <!-- Endereço -->
+                        <h5 class="mb-3 mt-4 text-primary">Endereço</h5>
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <label asp-for="Endereco" class="form-label"></label>
+                                <input asp-for="Endereco" class="form-control" />
+                                <span asp-validation-for="Endereco" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-2">
+                                <label asp-for="Numero" class="form-label"></label>
+                                <input asp-for="Numero" class="form-control" />
+                                <span asp-validation-for="Numero" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-2">
+                                <label asp-for="CEP" class="form-label"></label>
+                                <input asp-for="CEP" class="form-control" maxlength="8" />
+                                <span asp-validation-for="CEP" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="Complemento" class="form-label"></label>
+                                <input asp-for="Complemento" class="form-control" />
+                                <span asp-validation-for="Complemento" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Bairro" class="form-label"></label>
+                                <input asp-for="Bairro" class="form-control" />
+                                <span asp-validation-for="Bairro" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="Cidade" class="form-label"></label>
+                                <input asp-for="Cidade" class="form-control" />
+                                <span asp-validation-for="Cidade" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-2">
+                                <label asp-for="UF" class="form-label"></label>
+                                <input asp-for="UF" class="form-control" maxlength="2" />
+                                <span asp-validation-for="UF" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="CodigoMunicipio" class="form-label"></label>
+                                <input asp-for="CodigoMunicipio" class="form-control" maxlength="7" placeholder="Código IBGE" />
+                                <span asp-validation-for="CodigoMunicipio" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Contato -->
+                        <h5 class="mb-3 mt-4 text-primary">Contato</h5>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="Email" class="form-label"></label>
+                                <input asp-for="Email" class="form-control" type="email" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Telefone" class="form-label"></label>
+                                <input asp-for="Telefone" class="form-control" />
+                                <span asp-validation-for="Telefone" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <hr class="my-4" />
+                        
+                        <!-- Seção de Certificado Digital -->
+                        <h5 class="mb-3 text-primary">Certificado Digital</h5>
+                        
+                        @if (Model.TemCertificadoDigital && Model.DataVencimentoCertificado.HasValue)
+                        {
+                            var diasRestantes = (Model.DataVencimentoCertificado.Value - DateTime.Now).Days;
+                            var classeAlerta = diasRestantes <= 30 ? "alert-danger" : diasRestantes <= 90 ? "alert-warning" : "alert-success";
+                            
+                            <div class="alert @classeAlerta mb-3">
+                                <strong>📅 Certificado Digital Cadastrado:</strong>
+                                <ul class="mb-0">
+                                    <li><strong>Data de Vencimento:</strong> @Model.DataVencimentoCertificado.Value.ToString("dd/MM/yyyy")</li>
+                                    <li><strong>Dias Restantes:</strong> @diasRestantes dia(s)</li>
+                                    @if (diasRestantes <= 30)
+                                    {
+                                        <li class="text-danger"><strong>⚠️ ATENÇÃO: Certificado próximo do vencimento! Renove o quanto antes.</strong></li>
+                                    }
+                                    else if (diasRestantes <= 90)
+                                    {
+                                        <li class="text-warning"><strong>⚠️ Certificado vencendo em breve. Considere renovar.</strong></li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning mb-3">
+                                <strong>⚠️ Certificado Digital não cadastrado:</strong>
+                                <p class="mb-0">É necessário cadastrar um certificado digital para assinar e emitir notas fiscais eletrônicas.</p>
+                            </div>
+                        }
+                        
+                        <div class="alert alert-info mb-3">
+                            <strong>ℹ️ Sobre o Certificado Digital:</strong>
+                            <ul class="mb-0">
+                                <li>O certificado digital é necessário para assinar e emitir notas fiscais eletrônicas</li>
+                                <li>Certifique-se de cadastrar um certificado válido e não expirado</li>
+                                <li>A data de vencimento é extraída automaticamente do certificado</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Provedor de NFSe -->
+                        <h5 class="mb-3 mt-4 text-primary">📡 Provedor de NFSe (Emitente)</h5>
+                        <div class="mb-3">
+                            <label asp-for="ProvedorNFSe" class="form-label fw-bold">Selecione o Provedor de NFSe</label>
+                            <select asp-for="ProvedorNFSe" class="form-select form-select-lg" id="provedorNFSeSelect">
+                                <option value="1">🏛️ API Nacional NFSe (Receita Federal)</option>
+                                <option value="2">🔷 NS Tecnologia</option>
+                            </select>
+                            <span asp-validation-for="ProvedorNFSe" class="text-danger"></span>
+                            
+                            <!-- Informações sobre cada provedor -->
+                            <div id="infoProvedor" class="mt-3">
+                                <div id="infoNacional" style="display: none;">
+                                    <div class="alert alert-info">
+                                        <h6 class="alert-heading">🏛️ API Nacional NFSe (Receita Federal)</h6>
+                                        <ul class="mb-0 small">
+                                            <li>Provedor oficial da Receita Federal do Brasil</li>
+                                            <li>Requer certificado digital A1 ou A3</li>
+                                            <li>Requer ClientId e ClientSecret configurados</li>
+                                            <li>Ambiente: Homologação ou Produção</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div id="infoNSTecnologia" style="display: none;">
+                                    <div class="alert alert-info">
+                                        <h6 class="alert-heading">🔷 NS Tecnologia</h6>
+                                        <ul class="mb-0 small">
+                                            <li>Provedor terceirizado de emissão de NFSe</li>
+                                            <li>Requer Token de autenticação configurado</li>
+                                            <li>Ambiente: Homologação ou Produção</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <small class="form-text text-muted d-block mt-2">
+                                <strong>⚠️ Importante:</strong> O provedor selecionado será utilizado para todas as emissões de notas fiscais desta empresa. 
+                                Certifique-se de que as credenciais e certificados necessários estão configurados corretamente.
+                            </small>
+                        </div>
+
+                        <div class="d-flex gap-2 mb-4">
+                            <a asp-action="CertificadoDigital" class="btn btn-info">
+                                <span>🔐</span> @(Model.TemCertificadoDigital ? "Gerenciar" : "Cadastrar") Certificado Digital
+                            </a>
+                            <a asp-action="CredenciaisAPI" class="btn btn-warning">
+                                <span>🔑</span> @(Model.TemClientIdSecret ? "Gerenciar" : "Cadastrar") Credenciais da API
+                            </a>
+                        </div>
+
+                        <div class="form-group mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <span>💾</span> Salvar Alterações
+                            </button>
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        document.getElementById('logotipoFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Valida tamanho (500KB = 500 * 1024 bytes)
+                if (file.size > 500 * 1024) {
+                    alert('O arquivo é muito grande. Por favor, escolha uma imagem menor que 500KB.');
+                    e.target.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onloadend = function() {
+                    const base64String = reader.result.split(',')[1]; // Remove o prefixo "data:image/...;base64,"
+                    document.getElementById('logotipoBase64').value = base64String;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Mostra informações do provedor selecionado
+        function atualizarInfoProvedor() {
+            const select = document.getElementById('provedorNFSeSelect');
+            const infoNacional = document.getElementById('infoNacional');
+            const infoNSTecnologia = document.getElementById('infoNSTecnologia');
+            
+            if (select.value === '1') {
+                infoNacional.style.display = 'block';
+                infoNSTecnologia.style.display = 'none';
+            } else if (select.value === '2') {
+                infoNacional.style.display = 'none';
+                infoNSTecnologia.style.display = 'block';
+            } else {
+                infoNacional.style.display = 'none';
+                infoNSTecnologia.style.display = 'none';
+            }
+        }
+
+        // Inicializa a informação do provedor ao carregar a página
+        document.addEventListener('DOMContentLoaded', function() {
+            atualizarInfoProvedor();
+            document.getElementById('provedorNFSeSelect').addEventListener('change', atualizarInfoProvedor);
+        });
+    </script>
+}
+

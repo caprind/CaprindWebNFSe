@@ -1,0 +1,102 @@
+@model NFSe2026.Web.Models.CadastroViewModel
+@{
+    ViewData["Title"] = "Cadastro";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - NFSe 2026</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="bg-light">
+    <div class="container">
+        <div class="row justify-content-center align-items-center min-vh-100 py-5">
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-body p-5">
+                        <h2 class="card-title text-center mb-4">NFSe 2026</h2>
+                        <h4 class="text-center mb-4">Cadastro de Empresa</h4>
+
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            <div class="alert alert-danger" role="alert">
+                                <ul class="mb-0">
+                                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                    {
+                                        <li>@error.ErrorMessage</li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+
+                        <form asp-action="Cadastro" method="post" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label asp-for="CNPJ" class="form-label"></label>
+                                <input asp-for="CNPJ" class="form-control" placeholder="00.000.000/0000-00" />
+                                <span asp-validation-for="CNPJ" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Nome" class="form-label"></label>
+                                <input asp-for="Nome" class="form-control" />
+                                <span asp-validation-for="Nome" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Email" class="form-label"></label>
+                                <input asp-for="Email" class="form-control" type="email" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Senha" class="form-label"></label>
+                                <input asp-for="Senha" class="form-control" type="password" />
+                                <span asp-validation-for="Senha" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="ConfirmarSenha" class="form-label"></label>
+                                <input asp-for="ConfirmarSenha" class="form-control" type="password" />
+                                <span asp-validation-for="ConfirmarSenha" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Telefone" class="form-label"></label>
+                                <input asp-for="Telefone" class="form-control" placeholder="(00) 00000-0000" />
+                                <span asp-validation-for="Telefone" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="LogotipoFile" class="form-label"></label>
+                                <input asp-for="LogotipoFile" type="file" accept="image/*" class="form-control" id="logotipoFile" />
+                                <small class="form-text text-muted">Opcional. Formatos aceitos: JPG, PNG, GIF. Tamanho máximo recomendado: 500KB</small>
+                                <span asp-validation-for="LogotipoFile" class="text-danger"></span>
+                            </div>
+                            <input type="hidden" asp-for="Logotipo" id="logotipoBase64" />
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Cadastrar</button>
+                            </div>
+                        </form>
+
+                        <div class="text-center mt-3">
+                            <p>Já tem uma conta? <a asp-action="Login">Faça login</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+</body>
+</html>
+
