@@ -114,3 +114,8 @@ appsettings.Development.json
 ehthumbs.db
 Thumbs.db
 
+# Deploy (script deploy-vps.sh)
+publish-api/
+publish-web/
+appsettings.*.production.bak
+

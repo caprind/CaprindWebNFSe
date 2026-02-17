@@ -4,7 +4,67 @@ Domínio único: **caprindweb.com.br** — Web na raiz e API em `/api`.
 
 ---
 
-## 1. Publicar no PC (PowerShell)
+## Deploy com Git (recomendado)
+
+No VPS você clona o repositório uma vez, configura Nginx e systemd, e a cada atualização faz `git pull` + script de deploy.
+
+### Primeira vez no VPS
+
+1. **Instalar .NET 8 SDK** (necessário para build no servidor):
+
+   ```bash
+   sudo apt update
+   sudo apt install -y dotnet-sdk-8.0
+   dotnet --version
+   ```
+
+2. **Clonar o repositório** (ajuste a URL do seu Git):
+
+   ```bash
+   sudo mkdir -p /var/nfse
+   cd /var/nfse
+   sudo git clone https://github.com/caprind/CaprindWebNFSe.git app
+   cd app
+   sudo chown -R $USER:$USER /var/nfse/app
+   ```
+
+3. **Criar diretórios de deploy e configurar produção** (antes do primeiro deploy):
+
+   ```bash
+   sudo mkdir -p /var/nfse/api /var/nfse/web
+   ```
+
+   Edite no servidor (após o primeiro deploy) e preencha uma vez:
+   - `/var/nfse/api/appsettings.Production.json` — `ConnectionStrings:DefaultConnection` e `Jwt:Key`.
+
+4. **Configurar Nginx e systemd** conforme as seções 5 e 6 abaixo.
+
+5. **Primeiro deploy** (rodar na raiz do repositório `/var/nfse/app`):
+
+   ```bash
+   chmod +x scripts/deploy-vps.sh
+   ./scripts/deploy-vps.sh
+   ```
+
+   Depois edite `/var/nfse/api/appsettings.Production.json` no servidor com a connection string e a Jwt:Key, e reinicie:  
+   `sudo systemctl restart nfse-api`.
+
+### A cada novo deploy
+
+No PC, após commitar e dar push:
+
+```bash
+# No VPS, na pasta do repositório
+cd /var/nfse/app
+git pull
+./scripts/deploy-vps.sh
+```
+
+O script publica API e Web, copia para `/var/nfse/api` e `/var/nfse/web`, preserva os `appsettings.Production.json` já configurados no servidor e reinicia os serviços.
+
+---
+
+## 1. Publicar no PC (PowerShell) – deploy manual
 
 Na pasta da solution:
 
@@ -45,6 +105,9 @@ Se as pastas não existirem no VPS, crie antes por SSH: `mkdir -p /var/nfse/api 
 ---
 
 ## 4. Instalar .NET 8 no VPS (Ubuntu/Debian)
+
+- **Deploy com Git:** instale o **SDK**: `sudo apt install -y dotnet-sdk-8.0` (já indicado na seção "Deploy com Git").
+- **Deploy manual** (só publicar e copiar pastas): instale só o **runtime**:
 
 ```bash
 sudo apt update
