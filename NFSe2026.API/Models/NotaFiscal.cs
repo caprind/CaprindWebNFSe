@@ -28,7 +28,7 @@ public class NotaFiscal
     public DateTime Competencia { get; set; }
 
     [Required]
-    public DateTime DataEmissao { get; set; } = DateTime.UtcNow;
+    public DateTime DataEmissao { get; set; } = DateTime.Now;
 
     public DateTime? DataVencimento { get; set; }
 

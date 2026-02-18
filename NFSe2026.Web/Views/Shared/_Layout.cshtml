@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - CAPRINDWEB</title>
+    <link rel="icon" href="~/favicon.png" type="image/png" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/themes.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -11,7 +12,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-primary border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-primary border-bottom mb-3" style="background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%) !important; box-shadow: 0 2px 12px rgba(30, 64, 175, 0.25);">
             <div class="container-fluid">
                 <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
                     <img src="~/img/logo-caprindweb.png"
@@ -71,7 +72,7 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-muted" style="border-color: var(--theme-border-subtle, #e2e8f0) !important; color: #64748b;">
         <div class="container">
             &copy; 2025 - CAPRINDWEB
         </div>

@@ -85,7 +85,7 @@ public class NotaFiscalService : INotaFiscalService
         }
         
         notaFiscal.Situacao = SituacaoNotaFiscal.Rascunho;
-        notaFiscal.DataEmissao = DateTime.UtcNow;
+        notaFiscal.DataEmissao = DateTime.Now;
         notaFiscal.ValorLiquido = CalcularValorLiquido(notaFiscal);
         
         // Gera número sequencial da nota fiscal baseado na última nota emitida

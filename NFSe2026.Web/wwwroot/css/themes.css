@@ -1,12 +1,15 @@
 /* Sistema de Temas - Variáveis CSS */
 
 :root {
-  /* Tema Azul (Padrão) */
-  --theme-primary: #3b82f6;
+  /* Paleta CAPRIND (login e logotipo) */
+  --theme-primary: #2563eb;
   --theme-primary-dark: #1e40af;
   --theme-primary-light: #60a5fa;
-  --theme-primary-gradient-start: #3b82f6;
-  --theme-primary-gradient-end: #1e40af;
+  --theme-primary-gradient-start: #2563eb;
+  --theme-primary-gradient-end: #1e3a8a;
+  --theme-accent: #38bdf8;
+  --theme-bg-subtle: #f8fafc;
+  --theme-border-subtle: #e2e8f0;
 }
 
 /* Tema Vermelho */

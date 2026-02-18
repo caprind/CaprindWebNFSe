@@ -10,6 +10,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - CAPRINDWEB</title>
+    <link rel="icon" href="~/favicon.png" type="image/png" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -121,13 +122,13 @@
         }
 
         .login-header img {
-            max-width: 120px;
+            max-width: 88px;
             height: auto;
             margin-bottom: 0.75rem;
         }
 
         .login-header h1 {
-            font-size: 1.6rem;
+            font-size: 1.95rem;
             font-weight: 700;
             letter-spacing: 0.05em;
             text-transform: uppercase;
@@ -136,7 +137,7 @@
 
         .login-header .tagline {
             color: #9ca3af;
-            font-size: 0.85rem;
+            font-size: 1rem;
             font-weight: 500;
             letter-spacing: 0.12em;
             text-transform: uppercase;
@@ -145,7 +146,7 @@
 
         .login-header .helper {
             color: #cbd5f5;
-            font-size: 0.9rem;
+            font-size: 1.05rem;
             font-weight: 400;
         }
 
@@ -163,16 +164,16 @@
             left: 1rem;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 1.2rem;
+            font-size: 1.35rem;
             pointer-events: none;
             z-index: 2;
         }
 
         .form-control {
-            padding: 0.875rem 1rem 0.875rem 3rem;
+            padding: 0.95rem 1rem 0.95rem 3.2rem;
             border: 2px solid #e2e8f0;
             border-radius: 14px;
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 400;
             font-family: 'Inter', sans-serif;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -199,7 +200,7 @@
         .btn-login {
             width: 100%;
             padding: 1rem;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 600;
             font-family: 'Inter', sans-serif;
             letter-spacing: 0.3px;
@@ -248,16 +249,24 @@
             z-index: 1;
         }
 
-        .forgot-password {
-            text-align: right;
+        .login-links-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
             margin-top: 0.25rem;
             margin-bottom: 1.25rem;
+        }
+
+        .forgot-password {
+            margin: 0;
         }
 
         .forgot-password a {
             color: #2563eb;
             text-decoration: none;
-            font-size: 0.95rem;
+            font-size: 1.05rem;
             font-weight: 600;
             font-family: 'Inter', sans-serif;
             transition: all 0.3s ease;
@@ -272,31 +281,22 @@
             transform: translateX(-2px);
         }
 
-        .register-link {
-            text-align: center;
-            margin-top: 1.75rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid #e2e8f0;
-        }
-
-        .register-link p {
+        .login-register {
             color: #64748b;
-            margin-bottom: 0;
-            font-size: 0.95rem;
+            font-size: 1.05rem;
             font-weight: 400;
             font-family: 'Inter', sans-serif;
         }
 
-        .register-link a {
+        .login-register a {
             color: #2563eb;
             text-decoration: none;
             font-weight: 700;
             font-family: 'Inter', sans-serif;
             transition: all 0.3s ease;
-            letter-spacing: 0.2px;
         }
 
-        .register-link a:hover {
+        .login-register a:hover {
             color: #1e40af;
             text-decoration: underline;
         }
@@ -306,6 +306,7 @@
             border: none;
             margin-bottom: 1.25rem;
             padding: 0.9rem 1.1rem;
+            font-size: 1.05rem;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
             font-family: 'Inter', sans-serif;
             font-weight: 500;
@@ -313,7 +314,7 @@
 
         .field-validation-error {
             color: #dc3545;
-            font-size: 0.85rem;
+            font-size: 1rem;
             margin-top: 0.4rem;
             display: block;
             font-weight: 500;
@@ -347,8 +348,13 @@
             }
 
             .login-header h1 {
-                font-size: 1.4rem;
+                font-size: 1.75rem;
             }
+
+            .login-header .tagline { font-size: 0.95rem; }
+            .login-header .helper { font-size: 1rem; }
+            .form-control { font-size: 1.05rem; }
+            .btn-login { font-size: 1.1rem; }
         }
     </style>
 </head>
@@ -388,21 +394,22 @@
                     <span asp-validation-for="Senha" class="field-validation-error"></span>
                 </div>
 
-                <div class="forgot-password">
-                    <a asp-action="EsqueciSenha">
-                        <span>🔑</span>
-                        Esqueci minha senha
-                    </a>
+                <div class="login-links-row">
+                    <div class="forgot-password">
+                        <a asp-action="EsqueciSenha">
+                            <span>🔑</span>
+                            Esqueci minha senha
+                        </a>
+                    </div>
+                    <div class="login-register">
+                        Não tem uma conta? <a asp-action="Cadastro">Cadastre-se aqui</a>
+                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-login">
                     <span>Entrar →</span>
                 </button>
             </form>
-
-            <div class="register-link">
-                <p>Não tem uma conta? <a asp-action="Cadastro">Cadastre-se aqui</a></p>
-            </div>
         </div>
     </div>
 
