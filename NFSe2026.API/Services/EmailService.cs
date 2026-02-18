@@ -30,7 +30,7 @@ public class EmailService : IEmailService
             {
                 fromEmail = smtpUser;
             }
-            var fromName = _configuration["Email:FromName"] ?? "NFSe 2026";
+            var fromName = _configuration["Email:FromName"] ?? "CAPRINDWEB";
 
             // Se não houver configuração de SMTP, apenas loga (para desenvolvimento)
             if (string.IsNullOrEmpty(smtpUser) || string.IsNullOrEmpty(smtpPassword))
@@ -59,11 +59,11 @@ public class EmailService : IEmailService
             var mailMessage = new MailMessage
             {
                 From = new MailAddress(fromEmail, fromName),
-                Subject = "Código de Validação - NFSe 2026",
+                Subject = "Código de Validação - CAPRINDWEB",
                 Body = $@"
                     <html>
                     <body style='font-family: Arial, sans-serif;'>
-                        <h2 style='color: #667eea;'>Bem-vindo ao NFSe 2026!</h2>
+                        <h2 style='color: #667eea;'>Bem-vindo ao CAPRINDWEB!</h2>
                         <p>Olá <strong>{nome}</strong>,</p>
                         <p>Para confirmar seu cadastro e ativar sua conta, utilize o código de validação abaixo:</p>
                         <div style='background-color: #f8f9fa; border: 2px solid #667eea; border-radius: 8px; padding: 20px; text-align: center; margin: 20px 0;'>
@@ -72,7 +72,7 @@ public class EmailService : IEmailService
                         <p>Este código expira em 24 horas.</p>
                         <p>Se você não solicitou este cadastro, ignore este email.</p>
                         <hr style='border: none; border-top: 1px solid #e9ecef; margin: 20px 0;' />
-                        <p style='color: #6c757d; font-size: 12px;'>NFSe 2026 - Sistema de Nota Fiscal de Serviços Eletrônica</p>
+                        <p style='color: #6c757d; font-size: 12px;'>CAPRINDWEB - Sistema de Nota Fiscal de Serviços Eletrônica</p>
                     </body>
                     </html>",
                 IsBodyHtml = true
@@ -104,7 +104,7 @@ public class EmailService : IEmailService
             {
                 fromEmail = smtpUser;
             }
-            var fromName = _configuration["Email:FromName"] ?? "NFSe 2026";
+            var fromName = _configuration["Email:FromName"] ?? "CAPRINDWEB";
 
             // Se não houver configuração de SMTP, lança exceção
             if (string.IsNullOrEmpty(smtpUser) || string.IsNullOrEmpty(smtpPassword))
@@ -138,7 +138,7 @@ public class EmailService : IEmailService
                         <p>Segue em anexo a Nota Fiscal de Serviços Eletrônica número <strong>{numeroNota}</strong>.</p>
                         <p>Este é um email automático, por favor não responda.</p>
                         <hr style='border: none; border-top: 1px solid #e9ecef; margin: 20px 0;' />
-                        <p style='color: #6c757d; font-size: 12px;'>NFSe 2026 - Sistema de Nota Fiscal de Serviços Eletrônica</p>
+                        <p style='color: #6c757d; font-size: 12px;'>CAPRINDWEB - Sistema de Nota Fiscal de Serviços Eletrônica</p>
                     </body>
                     </html>",
                 IsBodyHtml = true

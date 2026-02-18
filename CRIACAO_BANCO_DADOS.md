@@ -1,8 +1,8 @@
-# 🗄️ Criação do Banco de Dados MySQL - NFSe 2026
+# 🗄️ Criação do Banco de Dados MySQL - CAPRINDWEB
 
 ## 📋 Resumo
 
-Scripts e instruções para criar o banco de dados MySQL do sistema NFSe 2026.
+Scripts e instruções para criar o banco de dados MySQL do sistema CAPRINDWEB.
 
 ## 🚀 Método Rápido (Recomendado)
 

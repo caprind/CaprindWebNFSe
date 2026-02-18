@@ -39,7 +39,7 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
     {
-        Title = "NFSe 2026 API",
+        Title = "CAPRINDWEB API",
         Version = "v1",
         Description = "API para emissão de Nota Fiscal de Serviços Eletrônica (NFS-e)",
         Contact = new Microsoft.OpenApi.Models.OpenApiContact
@@ -176,7 +176,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "NFSe 2026 API V1");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "CAPRINDWEB API V1");
         c.RoutePrefix = string.Empty; // Swagger na raiz
     });
 }
@@ -275,7 +275,7 @@ if (app.Environment.IsDevelopment())
 
 try
 {
-    Log.Information("Starting NFSe 2026 API");
+    Log.Information("Starting CAPRINDWEB API");
     app.Run();
 }
 catch (Exception ex)

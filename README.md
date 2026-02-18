@@ -1,4 +1,4 @@
-# NFSe 2026 - Sistema de Emissão de NFS-e
+# CAPRINDWEB - Sistema de Emissão de NFS-e
 
 Sistema ASP.NET Core para emissão de Nota Fiscal de Serviços Eletrônica (NFS-e) integrado com a API Nacional, utilizando MySQL como banco de dados.
 

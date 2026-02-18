@@ -1,4 +1,4 @@
-# Deploy NFSe 2026 – VPS Linux (caprindweb.com.br)
+# Deploy CAPRINDWEB – VPS Linux (caprindweb.com.br)
 
 Domínio único: **caprindweb.com.br** — Web na raiz e API em `/api`.
 
@@ -168,7 +168,7 @@ sudo certbot --nginx -d caprindweb.com.br -d www.caprindweb.com.br
 
 ```ini
 [Unit]
-Description=NFSe 2026 API
+Description=CAPRINDWEB API
 After=network.target
 
 [Service]
@@ -188,7 +188,7 @@ WantedBy=multi-user.target
 
 ```ini
 [Unit]
-Description=NFSe 2026 Web
+Description=CAPRINDWEB Web
 After=network.target
 
 [Service]

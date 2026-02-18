@@ -14,7 +14,7 @@ Adicione a seguinte seção no arquivo `appsettings.json`:
     "SmtpUser": "seu-email@gmail.com",
     "SmtpPassword": "sua-senha-de-app",
     "FromEmail": "seu-email@gmail.com",
-    "FromName": "NFSe 2026"
+    "FromName": "CAPRINDWEB"
   }
 }
 ```
@@ -27,7 +27,7 @@ Para usar o Gmail como servidor SMTP:
 2. **Crie uma Senha de App**:
    - Acesse: https://myaccount.google.com/apppasswords
    - Selecione "E-mail" e "Outro (nome personalizado)"
-   - Digite "NFSe 2026" como nome
+   - Digite "CAPRINDWEB" como nome
    - Copie a senha gerada (16 caracteres)
 3. Use essa senha no campo `SmtpPassword`
 
@@ -40,7 +40,7 @@ Exemplo completo:
     "SmtpUser": "seu-email@gmail.com",
     "SmtpPassword": "abcd efgh ijkl mnop",
     "FromEmail": "seu-email@gmail.com",
-    "FromName": "NFSe 2026"
+    "FromName": "CAPRINDWEB"
   }
 }
 ```
@@ -55,7 +55,7 @@ Exemplo completo:
     "SmtpUser": "seu-email@outlook.com",
     "SmtpPassword": "sua-senha",
     "FromEmail": "seu-email@outlook.com",
-    "FromName": "NFSe 2026"
+    "FromName": "CAPRINDWEB"
   }
 }
 ```
