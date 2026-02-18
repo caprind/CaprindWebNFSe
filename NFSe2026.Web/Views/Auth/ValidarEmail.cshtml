@@ -81,10 +81,10 @@
             margin-bottom: 2rem;
         }
 
-        .validation-header .icon {
-            font-size: 4rem;
+        .validation-header .logo {
+            max-width: 120px;
+            height: auto;
             margin-bottom: 1rem;
-            display: inline-block;
         }
 
         .validation-header h1 {
@@ -204,13 +204,15 @@
     </style>
 </head>
 <body>
-    <div class="validation-container">
-        <div class="validation-card">
-            <div class="validation-header">
-                <div class="icon">📧</div>
-                <h1>Validar Email</h1>
-                <p>Digite o código enviado para seu email</p>
-            </div>
+        <div class="validation-container">
+            <div class="validation-card">
+                <div class="validation-header">
+                    <img src="~/img/logo-caprindweb.png"
+                         alt="CAPRINDWEB"
+                         class="logo" />
+                    <h1>Validar Email</h1>
+                    <p>Digite o código enviado para seu email</p>
+                </div>
 
             @if (TempData["InfoMessage"] != null)
             {

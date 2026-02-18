@@ -63,6 +63,11 @@ public class EmailService : IEmailService
                 Body = $@"
                     <html>
                     <body style='font-family: Arial, sans-serif;'>
+                        <div style='text-align:center; margin-bottom:20px;'>
+                            <img src='https://caprindweb.com.br/img/logo-caprindweb.png'
+                                 alt='CAPRINDWEB'
+                                 style='max-width:140px; height:auto;' />
+                        </div>
                         <h2 style='color: #667eea;'>Bem-vindo ao CAPRINDWEB!</h2>
                         <p>Olá <strong>{nome}</strong>,</p>
                         <p>Para confirmar seu cadastro e ativar sua conta, utilize o código de validação abaixo:</p>
@@ -133,6 +138,11 @@ public class EmailService : IEmailService
                 Body = $@"
                     <html>
                     <body style='font-family: Arial, sans-serif;'>
+                        <div style='text-align:center; margin-bottom:20px;'>
+                            <img src='https://caprindweb.com.br/img/logo-caprindweb.png'
+                                 alt='CAPRINDWEB'
+                                 style='max-width:140px; height:auto;' />
+                        </div>
                         <h2 style='color: #667eea;'>Nota Fiscal de Serviços Eletrônica</h2>
                         <p>Olá <strong>{nomeTomador}</strong>,</p>
                         <p>Segue em anexo a Nota Fiscal de Serviços Eletrônica número <strong>{numeroNota}</strong>.</p>
